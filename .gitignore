@@ -1,0 +1,45 @@
+# Fichiers d'environnement (NE JAMAIS COMMITER !)
+#.env
+.env.local
+.env.*.local
+# Exception : autoriser .env.example comme modèle
+!.env.example
+
+# Fichiers de sauvegarde de base de données
+*.sql
+*.dump
+*.bak
+db/*.sql
+db/*.dump
+
+# Logs
+*.log
+logs/
+
+# Fichiers temporaires
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker
+.docker/
+
+# Fichiers sensibles
+*.pem
+*.key
+*.crt
+secrets/
+
