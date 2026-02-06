@@ -43,3 +43,8 @@ desktop.ini
 *.crt
 secrets/
 
+node_modules/
+
+
+
+
