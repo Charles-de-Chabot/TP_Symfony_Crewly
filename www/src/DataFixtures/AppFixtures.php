@@ -52,12 +52,12 @@ class AppFixtures extends Fixture
         foreach($arrayUser as $key => $value){
             $user = new User();
             $user->setEmail($value['email']);
-            $admin->setPassword($this->passwordHasher->hashPassword($admin, 'admin'));
-            $admin->setRoles(['ROLE_USER']);
-            $admin->setFirstname($value['firstname']);
-            $admin->setLastname($value['lastname']);
-            $admin->setCreatedAt(new DateTime());
-            $admin->setIsActive(true);
+            $user->setPassword($this->passwordHasher->hashPassword($user, 'admin'));
+            $user->setRoles(['ROLE_USER']);
+            $user->setFirstname($value['firstname']);
+            $user->setLastname($value['lastname']);
+            $user->setCreatedAt(new DateTime());
+            $user->setIsActive(true);
 
             $manager->persist($user);
             $this->addReference('user_' . $key, $user);
@@ -77,9 +77,9 @@ class AppFixtures extends Fixture
     }
 
     public function loadModel(ObjectManager $manager){
-        $arrayModel = ['Beneteau', 'Jeanneau', 'Dufour', 'Catalina', 'Hallberg-Rassy', 'Lagoon', 'Fountaine Pajot', 'Leopard', 'Bali', 'Nautitech', 'Prestige', 'Azimut', 'Sunseeker', 'Beneteau', 'Princess', 'FishHawk', 'Trophy', 'FunYak', 'Abaco', 'Yamaha', 'Kawasaki', 'Perception', 'Ocean'];
+        $arrayModel = ['Beneteau', 'Jeanneau', 'Dufour', 'Catalina', 'Hallberg-Rassy', 'Lagoon', 'Fountaine Pajot', 'Leopard', 'Bali', 'Nautitech', 'Prestige', 'Azimut', 'Sunseeker', 'Princess', 'FishHawk', 'Trophy', 'FunYak', 'Abaco', 'Yamaha', 'Kawasaki', 'Perception', 'Ocean'];
         foreach($arrayModel as $value){
-            $model = new Type();
+            $model = new Model();
             $model->setLabel($value);
 
             $manager->persist($model);
@@ -434,8 +434,10 @@ class AppFixtures extends Fixture
 
             $boat->setIsActive(true);
 
-            $boat->settype($this->getReference('type_' . $value['type'], Type::class));
+            $boat->setType($this->getReference('type_' . $value['type'], Type::class));
             $boat->setModel($this->getReference('model_' . $value['model'], Model::class));
+
+            $manager->persist($boat);
         }
     }
 
