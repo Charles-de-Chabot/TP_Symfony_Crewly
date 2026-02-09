@@ -44,7 +44,7 @@ desktop.ini
 secrets/
 
 node_modules/
-
+vendor/
 
 
 
