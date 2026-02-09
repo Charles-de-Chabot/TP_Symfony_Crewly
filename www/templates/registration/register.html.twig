@@ -1,0 +1,176 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Inscris toi!
+{% endblock %}
+
+
+{% block body %}
+	<div class="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+		<div class="container-form space-y-8">
+			<div class="text-center">
+				<a class="inline-block mb-8 group" href="#">
+					<img class="h-16 mx-auto transition-transform duration-200 group-hover:scale-105" src="/images/logo.png" alt="CreativeHub">
+				</a>
+				<h1 class="text-3xl text-gray-900 mb-2">{{ "Inscription"|upper }}</h1>
+				<p class="text-sm text-gray-600">
+					Déjà un compte ?
+					<a class="font-medium transition-colors text-primary hover:text-primary-hover" href="#">Se connecter</a>
+				</p>
+			</div>
+			<!-- FORMULAIRE -->
+			<div class="card rounded-xl p-8">
+				{{ form_start(registrationForm, {'attr' : { 'class': 'space-y-6' }}) }}
+
+				{% if not registrationForm.vars.valid %}
+					<div class="alert-error">
+						<div class="flex">
+							<div class="shrink-0">
+								<svg class="icon text-red-400" viewbox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+								</svg>
+							</div>
+							<div class="ml-3">
+								<p class="text-sm text-red-700">Veuillez corriger les erreurs suivantes:</p>
+								<ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+									{{ form_errors(registrationForm) }}
+								</ul>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+
+				<!-- prénom -->
+				<div>
+					{% set firstNameHasError = registrationForm.firstName.vars.errors|length > 0 %}
+					{{ form_label(registrationForm.firstName, null, {'label_attr': {'class': 'form_label'}}) }}
+					{{ form_widget(registrationForm.firstName, {'attr': {
+						'class' : firstNameHasError ? 'form-input-error' : 'form-input',
+						'placeholder': "votre prénom"
+					}}) }}
+					{% if firstNameHasError %}
+						<div class="form-error">
+							{{ form_errors(registrationForm.firstName) }}
+						</div>
+					{% endif %}
+				</div>
+
+                <!-- nom -->
+                <div>
+					{% set lastNameHasError = registrationForm.lastName.vars.errors|length > 0 %}
+					{{ form_label(registrationForm.lastName, null, {'label_attr': {'class': 'form_label'}}) }}
+					{{ form_widget(registrationForm.lastName, {'attr': {
+						'class' : lastNameHasError ? 'form-input-error' : 'form-input',
+						'placeholder': "votre nom"
+					}}) }}
+					{% if lastNameHasError %}
+						<div class="form-error">
+							{{ form_errors(registrationForm.lastName) }}
+						</div>
+					{% endif %}
+				</div>
+
+				<!-- email -->
+				<div>
+					{% set emailHasError = registrationForm.email.vars.errors|length > 0 %}
+					{{ form_label(registrationForm.email, null, {'label_attr': {'class': 'form_label'}}) }}
+					{{ form_widget(registrationForm.email, {'attr': {
+						'class' : emailHasError ? 'form-input-error' : 'form-input',
+						'placeholder': "votre@email.com"
+					}}) }}
+					{% if emailHasError %}
+						<div class="form-error">
+							{{ form_errors(registrationForm.email) }}
+						</div>
+					{% endif %}
+				</div>
+
+                <!-- Numéro de téléphone -->
+                <div>
+                    {% set phoneHasError = registrationForm.phoneNumber.vars.errors|length > 0 %}
+                    {{ form_label(registrationForm.phoneNumber, null, {'label_attr': {'class': 'form_label'}}) }}
+                    {{ form_widget(registrationForm.phoneNumber, {'attr': {
+                        'class' : phoneHasError ? 'form-input-error' : 'form-input',
+                        'placeholder': "+33 ..."
+                    }}) }}
+                    {% if phoneHasError %}
+                        <div class="form-error">
+                            {{ form_errors(registrationForm.phoneNumber) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Adresse -->
+                <div>
+                    {% set adressHasError = registrationForm.adress.vars.errors|length > 0 %}
+                    {{ form_label(registrationForm.adress, null, {'label_attr': {'class': 'form_label'}}) }}
+                    {{ form_widget(registrationForm.adress, {'attr': {
+                        'class' : adressHasError ? 'form-input-error' : 'form-input',
+                        'placeholder': "Votre adresse complète"
+                    }}) }}
+                    {% if adressHasError %}
+                        <div class="form-error">
+                            {{ form_errors(registrationForm.adress) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+				<!-- mot de passe -->
+				<div>
+					{% set passwordHasError = registrationForm.plainPassword.first.vars.errors|length > 0 %}
+					{{ form_label(registrationForm.plainPassword.first, null, {'label_attr': {'class': 'form_label'}}) }}
+					{{ form_widget(registrationForm.plainPassword.first, {'attr': {
+						'class' : passwordHasError ? 'form-input-error' : 'form-input',
+						'placeholder': "Minimum 6 caractères"
+					}}) }}
+					{% if passwordHasError %}
+						<div class="form-error">
+							{{ form_errors(registrationForm.plainPassword.first) }}
+						</div>
+					{% endif %}
+				</div>
+
+				<!-- confirmation mot de passe -->
+				<div>
+					{% set passwordConfirmHasError = registrationForm.plainPassword.second.vars.errors|length > 0 %}
+					{{ form_label(registrationForm.plainPassword.second, null, {'label_attr': {'class': 'form_label'}}) }}
+					{{ form_widget(registrationForm.plainPassword.second, {'attr': {
+						'class' : passwordConfirmHasError ? 'form-input-error' : 'form-input',
+						'placeholder': "Répétez le mot de passe"
+					}}) }}
+					{% if passwordConfirmHasError %}
+						<div class="form-error">
+							{{ form_errors(registrationForm.plainPassword.second) }}
+						</div>
+					{% endif %}
+				</div>
+
+				<!-- Conditions d'utilisation -->
+				<div class="flex items-center">
+					<div class="flex items-center h-5">
+						{{ form_widget(registrationForm.agreeTerms, {'attr':{
+							'class': 'h-4 w-4 border-standard rounded text-primary',
+						}}) }}
+					</div>
+					<div class="ml-3 text-sm">
+						{{ form_label(registrationForm.agreeTerms, null, {'attr':{
+							'class':'text-gray-700 cursor-pointer'
+						}}) }}
+
+						{% if registrationForm.agreeTerms.vars.errors|length > 0 %}
+							<div class="mt-1 text-sm text-red-600">
+								{{ form_errors(registrationForm.agreeTerms) }}
+							</div>
+						{% endif %}
+					</div>
+				</div>
+
+				<!-- bouton submit -->
+				<div>
+					<button class="btn-primary-lg w-full" type="submit">Créer mon compte</button>
+				</div>
+
+				{{ form_end(registrationForm) }}
+			</div>
+		</div>
+	</div>
+{% endblock %}
