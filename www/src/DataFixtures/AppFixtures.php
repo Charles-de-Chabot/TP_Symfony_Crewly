@@ -22,7 +22,6 @@ class AppFixtures extends Fixture
         $this->loadType($manager);
         $this->loadModel($manager);
         $this->loadBoat($manager);
-        $this->loadMedia($manager);
 
 
         $manager->flush();
@@ -438,30 +437,11 @@ class AppFixtures extends Fixture
             $boat->setModel($this->getReference('model_' . $value['model'], Model::class));
 
             $manager->persist($boat);
-        }
-    }
 
-    public function loadMedia(ObjectManager $manager)
-    {
-        $arrayMedia = [
-            ['ref' => 'Monocoque', 'path' => '/images/monocoque.png'],
-            ['ref' => 'Catamaran', 'path' => '/images/catamaran.png'],
-            ['ref' => 'MotorYatch', 'path' => '/images/motor.png'],
-            ['ref' => 'Pêche', 'path' => '/images/peche.png'],
-            ['ref' => 'Jetski', 'path' => '/images/jetski.png'],
-            ['ref' => 'Kayak', 'path' => '/images/kayak.png'],
-        ];
-
-        foreach ($arrayMedia as $value) {
-            $media = new Media();
-            $media->setImgPath($value['path']);
+            $media = new Media;
+            $media->setImgPath('/images/' . strtolower($value['type']) . '.png');
 
             $manager->persist($media);
-
-            // Stocke la référence pour pouvoir associer le média aux défis (clé: media_Dessin, media_Photo, etc.)
-            $this->addReference('media_' . $value['ref'], $media);
         }
     }
-
-    
 }
