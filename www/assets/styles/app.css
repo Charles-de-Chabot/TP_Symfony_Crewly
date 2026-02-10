@@ -256,8 +256,6 @@ h6 {
     transform: translateY(-1px);
 }
 
-
-
 /* Bouton danger (supprimer) */
 .btn-danger {
     @apply inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
@@ -350,6 +348,7 @@ h6 {
 
 /* Badge catégorie petit */
 .badge-category-sm {
+
     @apply inline-block px-3 py-1 text-xs font-semibold rounded-full;
 }
 
@@ -395,18 +394,18 @@ h6 {
     @apply text-primary;
 }
 
+.link-nav.active {
+    @apply text-primary;
+    @apply font-semibold;
+}
+
 .link-danger {
     @apply text-error;
     @apply transition-colors;
 }
 
 .link-danger:hover {
-    @apply text-red-900;
-}
-
-.link-nav.active {
-    @apply text-primary;
-    @apply font-semibold;
+    @apply text-red-800;
 }
 
 /* Lien footer */
@@ -502,7 +501,6 @@ h6 {
 .btn-secondary-lg .icon-with-text {
     @apply text-primary;
 }
-
 
 /* Icône dans les liens */
 .link-nav .icon-with-text {
