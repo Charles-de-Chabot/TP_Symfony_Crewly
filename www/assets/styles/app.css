@@ -1,6 +1,730 @@
 @import "tailwindcss";
 @source not "../../public";
 
-body {
-    background-color: rgb(255, 0, 0);
+/* ============================================
+   VARIABLES DE COULEURS - CHARTE GRAPHIQUE
+   ============================================ */
+
+@theme {
+    /* Couleurs principales */
+    --color-bg-main: #F8FAFC;        /* Background principal - Gris très clair */
+    --color-text-main: #1F2933;       /* Texte principal - Gris foncé */
+    --color-primary: #2563EB;          /* Primaire - Bleu moderne */
+    --color-primary-hover: #1D4ED8;   /* Primaire hover (plus foncé) */
+    --color-primary-light: #DBEAFE;   /* Primaire clair (pour backgrounds) */
+    --color-primary-lighter: #EFF6FF; /* Primaire très clair */
+    --color-primary-dark: #1E40AF;     /* Primaire foncé (pour textes sur fond clair) */
+    --color-accent: #7C3AED;           /* Accent dynamique - Violet doux */
+    --color-accent-hover: #6D28D9;     /* Accent hover */
+    --color-accent-light: #EDE9FE;     /* Accent clair */
+    --color-accent-lighter: #F5F3FF;   /* Accent très clair */
+    
+    /* Couleurs d'état */
+    --color-success: #16A34A;          /* Succès - Vert */
+    --color-success-light: #D1FAE5;    /* Succès clair */
+    --color-success-border: #10B981;   /* Bordure succès */
+    --color-alert: #F59E0B;            /* Alerte - Orange */
+    --color-alert-light: #FEF3C7;      /* Alerte clair */
+    --color-alert-border: #F59E0B;     /* Bordure alerte */
+    --color-error: #DC2626;            /* Erreur - Rouge */
+    --color-error-light: #FEE2E2;      /* Erreur clair */
+    --color-error-border: #EF4444;     /* Bordure erreur */
+    --color-error-input: #FCA5A5;      /* Erreur input (rouge clair) */
+    
+    /* Couleurs neutres */
+    --color-border: #E5E7EB;           /* Bordures - Gris clair */
+    --color-gray-50: #F9FAFB;           /* Gris très clair */
+    --color-gray-100: #F3F4F6;         /* Gris clair */
+    --color-gray-200: #E5E7EB;         /* Gris moyen clair */
+    --color-gray-300: #D1D5DB;         /* Gris moyen */
+    --color-gray-400: #9CA3AF;         /* Gris moyen foncé */
+    --color-gray-500: #6B7280;         /* Gris foncé */
+    --color-gray-600: #4B5563;         /* Gris très foncé */
+    --color-gray-700: #374151;         /* Gris extra foncé */
+    --color-gray-900: #1F2933;         /* Gris presque noir (texte principal) */
+}
+
+/* Déclaration de la police Buckwheat TC RG */
+@font-face {
+    font-family: 'Buckwheat TC';
+    src: url('../fonts/buckwheat-tc-rg.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Application de la police Buckwheat TC aux titres */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Buckwheat TC', sans-serif;
+}
+
+/* ============================================
+   CONTENEURS ET LAYOUTS
+   ============================================ */
+
+/* Conteneur principal (max-width 7xl) */
+.container-main {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Conteneur moyen (max-width 4xl) */
+.container-medium {
+    @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Conteneur formulaire (max-width md) */
+.container-form {
+    @apply max-w-md w-full;
+}
+
+/* Section avec padding vertical */
+.section {
+    @apply py-20;
+}
+
+/* Section avec padding vertical réduit */
+.section-sm {
+    @apply py-12;
+}
+
+/* ============================================
+   CARTES ET CONTAINERS
+   ============================================ */
+
+/* Carte principale avec ombre */
+.card {
+    @apply bg-white rounded-lg shadow-lg;
+}
+
+/* Carte avec ombre moyenne */
+.card-md {
+    @apply bg-white rounded-lg shadow-md;
+}
+
+/* Carte avec ombre légère */
+.card-sm {
+    @apply bg-white rounded-lg shadow-sm;
+}
+
+/* Carte avec effet hover */
+.card-hover {
+    @apply bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow;
+}
+
+/* Carte avec padding */
+.card-padded {
+    @apply bg-white rounded-lg shadow-lg p-8;
+}
+
+/* ============================================
+   BOUTONS - SYSTÈME HARMONISÉ
+   ============================================ */
+
+/* Base commune pour tous les boutons (propriétés CSS communes) */
+.btn-base {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+}
+
+.btn-base:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-base:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Bouton primaire standard */
+.btn-primary {
+    @apply inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-primary;
+    color: white;
+    @apply px-4 py-2 text-sm;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary:hover:not(:disabled) {
+    @apply bg-primary-hover;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+}
+
+.btn-primary:focus {
+    @apply shadow-primary-lighter;
+}
+
+/* Bouton primaire large */
+.btn-primary-lg {
+    @apply inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-primary;
+    color: white;
+    @apply px-6 py-3 text-base;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary-lg:hover:not(:disabled) {
+    @apply bg-primary-hover;
+    box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.btn-primary-lg:focus {
+    @apply shadow-primary-lighter;
+}
+
+/* Bouton primaire extra large */
+.btn-primary-xl {
+    @apply inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-primary;
+    color: white;
+    @apply px-8 py-4 text-lg;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.btn-primary-xl:hover:not(:disabled) {
+    @apply bg-primary-hover;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.btn-primary-xl:focus {
+    @apply shadow-primary-lighter;
+}
+
+/* Bouton secondaire */
+.btn-secondary {
+    @apply inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    background-color: white;
+    @apply text-primary;
+    border: 2px solid var(--color-primary);
+    @apply px-4 py-2 text-sm;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    @apply bg-primary-lighter;
+    @apply border-primary-hover;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.btn-secondary:focus {
+    @apply shadow-primary-lighter;
+}
+
+/* Bouton secondaire large */
+.btn-secondary-lg {
+    @apply inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    background-color: white;
+    @apply text-primary;
+    border: 2px solid var(--color-primary);
+    @apply px-6 py-3 text-base;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary-lg:hover:not(:disabled) {
+    @apply bg-primary-lighter;
+    @apply border-primary-hover;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary-lg:focus {
+    @apply shadow-primary-lighter;
+}
+
+/* Bouton secondaire transparent */
+.btn-secondary-transparent {
+    @apply inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-transparent text-white px-4 py-2 text-sm border-2 border-white;
+}
+
+.btn-secondary-transparent:hover:not(:disabled) {
+    @apply bg-white/10;
+    transform: translateY(-1px);
+}
+
+
+
+/* Bouton danger (supprimer) */
+.btn-danger {
+    @apply inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-error;
+    color: white;
+    @apply px-4 py-2 text-sm;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn-danger:hover:not(:disabled) {
+    background-color: #B91C1C;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.btn-danger:focus {
+    box-shadow: 0 0 0 3px var(--color-error-light);
+}
+
+/* ============================================
+   FORMULAIRES
+   ============================================ */
+
+/* Input standard */
+.form-input {
+    @apply border border-gray-300;
+    @apply w-full px-4 py-3 border rounded-lg transition-colors outline-none;
+}
+
+.form-input:focus {
+    @apply border-primary;
+    box-shadow: 0 0 0 2px var(--color-primary-lighter);
+}
+
+/* Textarea standard */
+.form-textarea {
+    @apply border border-gray-300;
+    @apply w-full px-4 py-3 border rounded-lg transition-colors outline-none resize-none;
+}
+
+.form-textarea:focus {
+    @apply border-primary;
+    box-shadow: 0 0 0 2px var(--color-primary-lighter);
+}
+
+/* Select standard */
+.form-select {
+    @apply border border-gray-300;
+    @apply w-full px-4 py-2 border rounded-lg transition-colors outline-none;
+}
+
+.form-select:focus {
+    @apply border-primary;
+    box-shadow: 0 0 0 2px var(--color-primary-lighter);
+}
+
+/* Label de formulaire */
+.form-label {
+    @apply text-text-main;
+    @apply block text-sm font-medium mb-2;
+}
+
+/* Message d'erreur de formulaire */
+.form-error {
+    @apply text-error;
+    @apply text-sm mt-1;
+}
+
+/* Input avec erreur */
+.form-input-error {
+    @apply border border-error-input;
+    @apply w-full px-4 py-3 border rounded-lg transition-colors outline-none;
+}
+
+.form-input-error:focus {
+    @apply border border-error;
+    box-shadow: 0 0 0 2px var(--color-error-light);
+}
+
+/* ============================================
+   BADGES ET TAGS
+   ============================================ */
+
+/* Badge catégorie */
+.badge-category {
+    @apply bg-primary-light;
+    @apply text-primary-dark;
+    @apply inline-block px-3 py-1 text-sm font-semibold rounded-full;
+}
+
+/* Badge catégorie petit */
+.badge-category-sm {
+    @apply inline-block px-3 py-1 text-xs font-semibold rounded-full;
+}
+
+/* ============================================
+   AVATARS
+   ============================================ */
+
+/* Avatar circulaire moyen */
+.avatar-md {
+    @apply bg-primary-light;
+    @apply w-10 h-10 rounded-full flex items-center justify-center;
+}
+
+/* Avatar circulaire petit */
+.avatar-sm {
+    @apply bg-primary-light;
+    @apply w-8 h-8 rounded-full flex items-center justify-center;
+}
+
+/* Avatar avec initiale */
+.avatar-initial {
+    @apply text-primary;
+    @apply text-sm font-semibold;
+}
+
+/* Avatar avec initiale petite */
+.avatar-initial-sm {
+    @apply text-primary;
+    @apply text-xs font-semibold;
+}
+
+/* ============================================
+   LIENS
+   ============================================ */
+
+/* Lien de navigation */
+.link-nav {
+    @apply text-gray-700;
+    @apply transition-colors;
+}
+
+.link-nav:hover {
+    @apply text-primary;
+}
+
+.link-danger {
+    @apply text-error;
+    @apply transition-colors;
+}
+
+.link-danger:hover {
+    @apply text-red-900;
+}
+
+.link-nav.active {
+    @apply text-primary;
+    @apply font-semibold;
+}
+
+/* Lien footer */
+.link-footer {
+    @apply text-gray-600;
+    @apply transition-colors text-sm flex items-center;
+}
+
+.link-footer:hover {
+    @apply text-primary;
+}
+
+/* Lien avec icône */
+.link-icon {
+    @apply text-gray-600;
+    @apply transition-colors text-sm flex items-center;
+}
+
+.link-icon:hover {
+    @apply text-primary;
+}
+
+/* ============================================
+   ALERTES ET MESSAGES
+   ============================================ */
+
+/* Alerte succès */
+.alert-success {
+    @apply bg-success-light;
+    border-left: 4px solid var(--color-success-border);
+    @apply p-4 rounded;
+}
+
+/* Alerte erreur */
+.alert-error {
+    @apply bg-error-light;
+    border-left: 4px solid var(--color-error-border);
+    @apply p-4 rounded;
+}
+
+/* Alerte info */
+.alert-info {
+    @apply bg-primary-lighter;
+    border-left: 4px solid var(--color-primary);
+    @apply p-4 rounded;
+}
+
+/* Alerte warning */
+.alert-warning {
+    @apply bg-alert-light;
+    border-left: 4px solid var(--color-alert-border);
+    @apply p-4 rounded;
+}
+
+/* ============================================
+   ICÔNES SVG - SYSTÈME HARMONISÉ
+   ============================================ */
+
+/* Icône SVG standard */
+.icon {
+    @apply w-5 h-5;
+}
+
+/* Icône SVG petite */
+.icon-sm {
+    @apply w-4 h-4;
+}
+
+/* Icône SVG grande */
+.icon-lg {
+    @apply w-8 h-8;
+}
+
+/* Icône SVG extra grande */
+.icon-xl {
+    @apply w-10 h-10;
+}
+
+/* Icône SVG avec marge droite (pour les boutons) */
+.icon-with-text {
+    @apply w-4 h-4 transition-colors duration-200;
+}
+
+/* Icône dans les boutons primaires */
+.btn-primary .icon-with-text,
+.btn-primary-lg .icon-with-text,
+.btn-primary-xl .icon-with-text {
+    color: white;
+}
+
+/* Icône dans les boutons secondaires */
+.btn-secondary .icon-with-text,
+.btn-secondary-lg .icon-with-text {
+    @apply text-primary;
+}
+
+
+/* Icône dans les liens */
+.link-nav .icon-with-text {
+    @apply text-gray-400;
+    @apply mr-2;
+}
+
+.link-nav:hover .icon-with-text {
+    @apply text-primary;
+}
+
+/* ============================================
+   GRADIENTS
+   ============================================ */
+
+/* Gradient hero */
+.gradient-hero {
+    background: linear-gradient(to bottom right, var(--color-primary-lighter), white, var(--color-accent-lighter));
+}
+
+/* Gradient CTA */
+.gradient-cta {
+    background: linear-gradient(to right, var(--color-primary), var(--color-accent));
+}
+
+/* Gradient carte primaire */
+.gradient-card-primary {
+    background: linear-gradient(to bottom right, var(--color-primary-lighter), var(--color-primary-light));
+}
+
+/* Gradient carte accent */
+.gradient-card-accent {
+    background: linear-gradient(to bottom right, var(--color-accent-lighter), var(--color-accent-light));
+}
+
+/* Gradient carte accent alternatif */
+.gradient-card-accent-alt {
+    background: linear-gradient(to bottom right, var(--color-accent-light), var(--color-primary-light));
+}
+
+/* Gradient placeholder */
+.gradient-placeholder {
+    background: linear-gradient(to bottom right, var(--color-primary-light), var(--color-accent-light));
+}
+
+/* ============================================
+   COULEURS DE TEXTE ET BACKGROUND
+   ============================================ */
+
+/* Background principal */
+.bg-main {
+    @apply bg-bg-main;
+}
+
+/* Texte principal */
+.text-main {
+    @apply text-text-main;
+}
+
+/* Texte secondaire */
+.text-secondary {
+    @apply text-gray-600;
+}
+
+/* Texte tertiaire */
+.text-tertiary {
+    @apply text-gray-500;
+}
+
+/* Bordure standard */
+.border-standard {
+    @apply border border-border;
+}
+
+/* ============================================
+   SYSTÈME DE VOTE - COMPOSANT HARMONISÉ
+   ============================================ */
+
+/* Conteneur du bouton de vote */
+.vote-container {
+    @apply flex flex-col items-center justify-center;
+}
+
+/* Bouton de vote principal */
+.vote-button {
+    @apply flex flex-col items-center justify-center p-6 rounded-xl transition-all duration-300 cursor-pointer border-2;
+    min-width: 120px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.vote-button:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.vote-button:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+}
+
+.vote-button:disabled {
+    @apply opacity-60 cursor-wait;
+}
+
+/* État : non voté */
+.vote-button:not(.voted) {
+    @apply bg-primary-light;
+    @apply text-primary;
+    @apply border-primary-light;
+}
+
+.vote-button:not(.voted):hover {
+    @apply bg-primary-lighter;
+    @apply border-primary;
+}
+
+/* État : voté */
+.vote-button.voted {
+    @apply bg-error-light;
+    @apply text-error;
+    @apply border-error-light;
+}
+
+.vote-button.voted:hover {
+    background-color: #FEE2E2;
+    @apply text-error;
+}
+
+/* Icône de vote */
+.vote-icon {
+    @apply w-10 h-10 mb-2 transition-all duration-300;
+}
+
+.vote-button:not(.voted) .vote-icon {
+    fill: none;
+    stroke: currentColor;
+}
+
+.vote-button.voted .vote-icon {
+    fill: currentColor;
+    stroke: currentColor;
+}
+
+/* Compteur de votes */
+.vote-count {
+    @apply text-2xl font-bold mb-1 transition-all duration-300;
+}
+
+/* Texte du bouton */
+.vote-text {
+    @apply text-sm font-medium transition-colors duration-300;
+}
+
+/* Conteneur de vote désactivé (non connecté) */
+.vote-disabled {
+    @apply flex flex-col items-center justify-center p-6 rounded-xl border-2;
+    @apply bg-gray-100;
+    @apply text-gray-400;
+    @apply border border-gray-200;
+    min-width: 120px;
+}
+
+/* Statistiques de vote (affichage secondaire) */
+.vote-stats {
+    @apply flex items-center text-gray-600 transition-colors duration-200;
+}
+
+.vote-stats svg {
+    @apply w-5 h-5 mr-2;
+    @apply text-gray-500;
+}
+
+/* ============================================
+   ANIMATIONS ET TRANSITIONS
+   ============================================ */
+
+/* Animation pour les messages */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Animation pulse pour les notifications */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Transition douce pour les cartes */
+.card-hover {
+    @apply transition-all duration-300;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+}
+
+/* Transition pour les liens */
+.link-nav,
+.link-footer {
+    @apply transition-all duration-200;
+}
+
+.link-nav:hover,
+.link-footer:hover {
+    transform: translateX(2px);
 }
