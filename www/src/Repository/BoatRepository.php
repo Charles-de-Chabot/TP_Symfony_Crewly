@@ -16,28 +16,45 @@ class BoatRepository extends ServiceEntityRepository
         parent::__construct($registry, Boat::class);
     }
 
-    //    /**
-    //     * @return Boat[] Returns an array of Boat objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('b.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findAllWithFilters(int $typeId = 0, int $modelId, string $city): array
+    {
+        // ========== CRÉATION DU QUERY BUILDER ==========
 
-    //    public function findOneBySomeField($value): ?Boat
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $qb = $this->createQueryBuilder('c')
+            // Charger les relations (éviter les N+1 queries)
+            ->leftJoin('c.type', 'typ')
+            ->leftJoin('c.model', 'modl')
+            ->leftJoin('c.media', 'm')
+            ->leftJoin('c.adress', 'a')
+            // Condition de base : seulement les challenges actifs
+            ->where('c.isActive = :isActive')
+            ->setParameter('isActive', true)
+            // Condition pour filter par ville
+            ->andwhere('a.city = :city')
+            ->setParameter('city', $city)
+            // GROUP BY pour éviter les doublons (à cause du JOIN sur votes)
+            ->groupBy('c.id');
+
+             // ========== FILTRAGE PAR TYPE ==========
+
+        if ($typeId > 0) {
+            // Ajouter un filtre : seulement cette catégorie
+            $qb->andWhere('typ.id = :typeId')
+                ->setParameter('typeId', $typeId)
+            ;
+        }
+            // ========== FILTRAGE PAR MODEL ==========
+
+        if ($modelId > 0) {
+            // Ajouter un filtre : seulement cette catégorie
+            $qb->andWhere('modl.id = :modelId')
+                ->setParameter('modelId', $modelId)
+            ;
+        }
+            // ========== EXÉCUTION ET RETOUR ==========
+
+        return $qb->getQuery()->getResult();
+
+    }
+
 }

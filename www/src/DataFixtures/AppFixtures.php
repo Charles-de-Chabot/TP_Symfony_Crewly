@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Adress;
 use App\Entity\Boat;
 use App\Entity\Media;
 use App\Entity\Model;
@@ -21,6 +22,7 @@ class AppFixtures extends Fixture
         $this->loadUser($manager);
         $this->loadType($manager);
         $this->loadModel($manager);
+        $this->loadAdress($manager);
         $this->loadBoat($manager);
 
 
@@ -84,6 +86,27 @@ class AppFixtures extends Fixture
             $manager->persist($model);
 
             $this->addReference("model_" . $value, $model);
+        }
+    }
+
+    public function loadAdress(ObjectManager $manager)
+    {
+        $adresses = [
+            ['house_number' => '1', 'street_name' => 'Quai du Port', 'postcode' => '13002', 'city' => 'Marseille'],
+            ['house_number' => '10', 'street_name' => 'Marina du Château', 'postcode' => '29200', 'city' => 'Brest'],
+            ['house_number' => '2', 'street_name' => 'Place de la Bourse', 'postcode' => '33000', 'city' => 'Bordeaux'],
+            ['house_number' => '1', 'street_name' => 'Quai Pierre Forgas', 'postcode' => '66660', 'city' => 'Port-Vendres']
+        ];
+
+        foreach ($adresses as $data) {
+            $adress = new Adress();
+            $adress->setHouseNumber($data['house_number']);
+            $adress->setStreetName($data['street_name']);
+            $adress->setPostcode($data['postcode']);
+            $adress->setCity($data['city']);
+
+            $manager->persist($adress);
+            $this->addReference('adress_' . $data['city'], $adress);
         }
     }
 
@@ -433,6 +456,10 @@ class AppFixtures extends Fixture
 
             $boat->setIsActive(true);
 
+            $cities = ['Marseille', 'Brest', 'Bordeaux', 'Port-Vendres'];
+            $randomCity = $cities[array_rand($cities)];
+            $boat->setAdress($this->getReference('adress_' . $randomCity, Adress::class));
+
             $boat->setType($this->getReference('type_' . $value['type'], Type::class));
             $boat->setModel($this->getReference('model_' . $value['model'], Model::class));
 
@@ -444,4 +471,5 @@ class AppFixtures extends Fixture
             $manager->persist($media);
         }
     }
+    
 }

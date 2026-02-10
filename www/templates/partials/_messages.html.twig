@@ -1,0 +1,21 @@
+{# Message flash #}
+{% for label, messages in app.flashes %}
+	{% for message in messages %}
+		<div class="mb-6 {{ label == 'success' ? 'alert-success' : 'alert-error' }}">
+			<div class="flex">
+				<div class="shrink-0">
+					<svg class="icon text-{{ label == 'success' ? 'green' : 'red' }}-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+						{% if label == 'success' %}
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+						{% else %}
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+						{% endif %}
+					</svg>
+				</div>
+				<div class="ml-3">
+					<p class="text-sm text-{{ label == 'success' ? 'green' : 'red' }}-500">{{ message }}</p>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+{% endfor %}

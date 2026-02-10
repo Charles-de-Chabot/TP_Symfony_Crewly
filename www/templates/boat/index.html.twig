@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}La Flotte - Crewly
+{% endblock %}
+
+{% block body %}
+	<div class="min-h-screen bg-main py-8">
+		<div class="container-main">
+			{% include "partials/_messages.html.twig" %}
+			<!-- En tête -->
+			<div class="mb-8">
+				<h1 class="text-4xl text-gray-900 mb-2">Tous les Bateaux</h1>
+				<p class="text-gray-600">Découvrez notre flotte
+				</p>
+			</div>
+
+			{# systeme de tri et filtre  #}
+			<div class="card-sm p-6 mb-8">
+				<form class="flex flex-col md:flex-row gap-4" action="{{ path('app_boat_index') }}" method="get">
+					<div
+						class="flex-1">
+						{# filtre de type #}
+						<label for="type" class="form-label">
+							Type
+						</label>
+						<select name="type" id="type" class="form-select" onchange="this.form.submit()">
+							<option value="0" {{ currentType == 0 ? 'selected' : '' }}>Tous les types</option>
+							{% for type in types %}
+								<option value="{{ type.id }}" {{ currentType == type.id ? 'selected' : '' }}>
+									{{ type.label }}
+								</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div
+						class="flex-1">
+						{# filtre de model #}
+						<label for="model" class="form-label">
+							Model
+						</label>
+						<select name="model" id="model" class="form-select" onchange="this.form.submit()">
+							<option value="0" {{ currentModel == 0 ? 'selected' : '' }}>Tous les modèles</option>
+							{% for model in models %}
+								<option value="{{ model.id }}" {{ currentModel == model.id ? 'selected' : '' }}>
+									{{ model.label }}
+								</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div
+						class="flex-1">
+						{# filtre de city #}
+						<label for="city" class="form-label">
+							Ville
+						</label>
+						<select name="city" id="city" class="form-select" onchange="this.form.submit()">
+							<option value="0" {{ currentCity == '0' ? 'selected' : '' }}>Toutes les villes</option>
+							{% for city in citys|default([]) %}
+								<option value="{{ city.id }}" {{ currentCity == city.id ? 'selected' : '' }}>
+									{{ city.label }}
+								</option>
+							{% endfor %}
+						</select>
+					</div>
+
+
+					{# bouton de reinitialisation  #}
+					{% if currentType != 0 or currentModel != 0 or currentCity != '0' %}
+						<div class="flex items-end">
+							<a href="{{ path('app_boat_index') }}" class="px-4 py-2 transition-colors link-nav">
+								Réinitialiser
+							</a>
+						</div>
+					{% endif %}
+
+				</form>
+			</div>
+
+			<!-- Liste des boats -->
+			{% if boats|length > 0 %}
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					{% for boat in boats %}
+						<div
+							class="card-hover overflow-hidden flex flex-col">
+							<!-- Image du boat -->
+							<a class="block" href="#">
+								{% if boat.medias|length > 0 %}
+									<img class="w-full h-48 object-cover" src="{{ boat.medias.first.path }}" alt="{{ boat.name }}">
+								{% else %}
+									<div class="w-full h-48 gradient-placeholder flex items-center justify-center">
+										<svg class="w-16 h-16 text-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+										</svg>
+									</div>
+								{% endif %}
+							</a>
+
+							<!-- contenu de la carte -->
+							<div
+								class="p-6 flex flex-col flex-1">
+								<!-- type -->
+								<div class="mb-3">
+									<span class="badge-category-sm bg-primary-light text-primary">
+										{{ boat.type.label }}
+									</span>
+								</div>
+
+								<!-- titre -->
+								<h3 class="text-xl text-gray-900 mb-2 line-clamp-2">
+									<a class="link-nav transition-all duration-200 hover:underline" href="#">
+										{{ boat.name }}
+									</a>
+								</h3>
+
+								<!-- description -->
+								<p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">
+									{{ boat.description|default("Pas de descption") }}
+								</p>
+
+								{# informations #}
+
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% endif %}
+		</div>
+	</div>
+
+{% endblock %}
