@@ -84,35 +84,6 @@
 					{% endif %}
 				</div>
 
-                <!-- Numéro de téléphone -->
-                <div>
-                    {% set phoneHasError = registrationForm.phoneNumber.vars.errors|length > 0 %}
-                    {{ form_label(registrationForm.phoneNumber, null, {'label_attr': {'class': 'form_label'}}) }}
-                    {{ form_widget(registrationForm.phoneNumber, {'attr': {
-                        'class' : phoneHasError ? 'form-input-error' : 'form-input',
-                        'placeholder': "+33 ..."
-                    }}) }}
-                    {% if phoneHasError %}
-                        <div class="form-error">
-                            {{ form_errors(registrationForm.phoneNumber) }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Adresse -->
-                <div>
-                    {% set adressHasError = registrationForm.adress.vars.errors|length > 0 %}
-                    {{ form_label(registrationForm.adress, null, {'label_attr': {'class': 'form_label'}}) }}
-                    {{ form_widget(registrationForm.adress, {'attr': {
-                        'class' : adressHasError ? 'form-input-error' : 'form-input',
-                        'placeholder': "Votre adresse complète"
-                    }}) }}
-                    {% if adressHasError %}
-                        <div class="form-error">
-                            {{ form_errors(registrationForm.adress) }}
-                        </div>
-                    {% endif %}
-                </div>
 
 				<!-- mot de passe -->
 				<div>

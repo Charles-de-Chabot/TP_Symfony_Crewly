@@ -15,6 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 class RegistrationFormType extends AbstractType
 {
@@ -39,19 +40,7 @@ class RegistrationFormType extends AbstractType
                     'autocomplete' => 'family-name',
                 ],
             ])
-            // Numéro de téléphone
-            ->add('phoneNumber', TelType::class, [
-                'label' => 'Téléphone',
-                'attr' => [
-                    'class' => 'form-input',
-                    'placeholder' => '06 00 00 00 00',
-                    'autocomplete' => 'tel',
-                ],
-            ])
-            // Adresse
-            ->add('adress', AdressType::class, [
-                'label' => 'Votre adresse postale :',
-            ])
+           
             // email
             ->add('email', EmailType::class, [
                 'label' => 'Email',
@@ -106,6 +95,13 @@ class RegistrationFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'constraints' => [
+                new UniqueEntity(
+                    fields: ['email'],
+                    message: 'Cette adresse email est déjà utilisée par un autre compte.',
+                    errorPath: 'email',
+                ),
+            ],
         ]);
     }
 }

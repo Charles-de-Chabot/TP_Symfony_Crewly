@@ -44,14 +44,6 @@
     --color-gray-900: #1F2933;         /* Gris presque noir (texte principal) */
 }
 
-/* Déclaration de la police Buckwheat TC RG */
-@font-face {
-    font-family: 'Buckwheat TC';
-    src: url('../fonts/buckwheat-tc-rg.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
 
 /* Application de la police Buckwheat TC aux titres */
 h1,
