@@ -1,0 +1,109 @@
+<!-- Navigation -->
+<nav class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200">
+	<div class="container-main">
+		<div
+			class="flex justify-between items-center h-16 ">
+			<!-- Logo -->
+			<div class="flex items-center">
+				<a class="flex items-center space-x-3" href="{{ path('app_home') }}">
+					<img class="h-10 w-auto" src="/images/logo.png" alt="CreativeHub">
+				</a>
+			</div>
+			<!-- Menu Desktop -->
+			<div class="hidden md:flex items-center space-x-6">
+				<a class="link-nav {{ app.request.attributes.get('_route') == 'app_home' ? 'active' : '' }}" href="{{ path('app_home') }}">
+					Accueil
+				</a>
+				<a class="link-nav {{ app.request.attributes.get('_route') == 'app_boat' ? 'active' : '' }}" href="#">
+					La flotte
+				</a>
+
+				{% if app.user %}
+					<a class="link-nav {{ app.request.attributes.get('_route') == 'app_boat_new' ? 'active' : '' }}" href="#">
+						Créer une flotte
+					</a>
+
+					{% if is_granted('ROLE_ADMIN') %}
+						<a class="link-nav {{ app.request.attributes.get('_route') == 'app_admin' ? 'active' : '' }}" href="#">
+							Dashboard
+						</a>
+					{% endif %}
+				{% endif %}
+			</div>
+			<!-- Actions utilisateur -->
+			<div class="hidden md:flex items-center space-x-4">
+				{% if app.user %}
+					<a class="btn-primary flex items-center space-x-2" href="#">
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+						</svg>
+						<span>Mon compte</span>
+					</a>
+					<a class="link-nav" href="{{ path('app_logout') }}">Déconnexion</a>
+				{% else %}
+					<a class="link-nav" href="{{ path('app_login') }}">Connexion</a>
+					<a class="btn-primary flex items-center space-x-2" href="{{ path('app_register') }}">
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+						</svg>
+						<span>S'inscrire</span>
+					</a>
+				{% endif %}
+			</div>
+
+			<!-- Bouton menu mobile -->
+			<button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary" type="button" aria-expanded="false">
+				<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" id="menu-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+				</svg>
+				<svg class="h-6 w-6 hidden" fill="none" stroke="currentColor" viewbox="0 0 24 24" id="close-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+				</svg>
+			</button>
+		</div>
+		<!--  Menu mobile-->
+		<div class="hidden md:hidden" id="mobile-menu">
+			<div class="px-2 pt-2 pb-3 space-y-1 border-t border-gray-200 mt-2">
+				<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="{{ path('app_home') }}">
+					Accueil
+				</a>
+				<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="#">
+					Défis
+				</a>
+
+				{% if app.user %}
+					<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="#">Créer un défi</a>
+					<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="#">Mon compte</a>
+					<a class="block px-3 py-2 rounded-md text-base font-medium text-accent hover:text-accent/80 hover:bg-gray-50" href="#">Dashboard</a>
+
+					<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="{{ path('app_logout') }}">Déconnexion</a>
+
+				{% else %}
+					<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="{{ path('app_login') }}">Connexion</a>
+					<a class="block px-3 py-2 rounded-md text-base font-medium text-white bg-primary hover:bg-primary/90" href="{{ path('app_register') }}">S'inscrire</a>
+
+				{% endif %}
+
+
+			</div>
+		</div>
+	</div>
+</nav>
+
+<script>
+	// Toggle menu mobile
+document.getElementById('mobile-menu-button') ?. addEventListener('click', function () {
+const menu = document.getElementById('mobile-menu');
+const menuIcon = document.getElementById('menu-icon');
+const closeIcon = document.getElementById('close-icon');
+
+if (menu && menuIcon && closeIcon) {
+menu.classList.toggle('hidden');
+menuIcon.classList.toggle('hidden');
+closeIcon.classList.toggle('hidden');
+
+
+}
+
+})
+</script>
