@@ -14,7 +14,7 @@
 				<a class="link-nav {{ app.request.attributes.get('_route') == 'app_home' ? 'active' : '' }}" href="{{ path('app_home') }}">
 					Accueil
 				</a>
-				<a class="link-nav {{ app.request.attributes.get('_route') == 'app_boat' ? 'active' : '' }}" href="#">
+				<a class="link-nav {{ app.request.attributes.get('_route') == 'app_boat' ? 'active' : '' }}" href="{{ path('app_boat_index') }}">
 					La flotte
 				</a>
 
