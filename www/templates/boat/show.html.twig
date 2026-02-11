@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ boat.name }}
+	- CreativeHub
+{% endblock %}
+
+{% block body %}
+
+    <div class="min-h-screen bg-main py-8">
+        <div class="container-medium">
+
+            {% include "partials/_messages.html.twig" %}
+
+			{# Bouton retour #}
+			<a class="link-nav inline-flex items-center mb-6" href="{{ path('app_boat_index') }}">
+				<svg class="icon-sm mr-2" fill="none" stroke="currentColor" viewbox="0 0 24 24" stroke-width="2">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+				</svg>
+				<span>Retour à la flotte</span>
+			</a>
+
+        </div>
+    </div>
+
+{% endblock %}
