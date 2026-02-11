@@ -16,7 +16,7 @@ class BoatRepository extends ServiceEntityRepository
         parent::__construct($registry, Boat::class);
     }
 
-    public function findAllWithFilters(int $typeId = 0, int $modelId, string $city): array
+    public function findAllWithFilters(int $typeId = 0, int $modelId, ?string $city): array
     {
         // ========== CRÉATION DU QUERY BUILDER ==========
 
@@ -29,13 +29,10 @@ class BoatRepository extends ServiceEntityRepository
             // Condition de base : seulement les challenges actifs
             ->where('c.isActive = :isActive')
             ->setParameter('isActive', true)
-            // Condition pour filter par ville
-            ->andwhere('a.city = :city')
-            ->setParameter('city', $city)
             // GROUP BY pour éviter les doublons (à cause du JOIN sur votes)
             ->groupBy('c.id');
 
-             // ========== FILTRAGE PAR TYPE ==========
+        // ========== FILTRAGE PAR TYPE ==========
 
         if ($typeId > 0) {
             // Ajouter un filtre : seulement cette catégorie
@@ -43,7 +40,7 @@ class BoatRepository extends ServiceEntityRepository
                 ->setParameter('typeId', $typeId)
             ;
         }
-            // ========== FILTRAGE PAR MODEL ==========
+        // ========== FILTRAGE PAR MODEL ==========
 
         if ($modelId > 0) {
             // Ajouter un filtre : seulement cette catégorie
@@ -51,10 +48,16 @@ class BoatRepository extends ServiceEntityRepository
                 ->setParameter('modelId', $modelId)
             ;
         }
-            // ========== EXÉCUTION ET RETOUR ==========
+
+        // ========== FILTRAGE PAR VILLE ==========
+
+        if ($city) {
+            $qb->andWhere('a.city = :city')
+                ->setParameter('city', $city);
+        }
+
+        // ========== EXÉCUTION ET RETOUR ==========
 
         return $qb->getQuery()->getResult();
-
     }
-
 }

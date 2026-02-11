@@ -55,9 +55,9 @@
 						</label>
 						<select name="city" id="city" class="form-select" onchange="this.form.submit()">
 							<option value="0" {{ currentCity == '0' ? 'selected' : '' }}>Toutes les villes</option>
-							{% for city in citys|default([]) %}
-								<option value="{{ city.id }}" {{ currentCity == city.id ? 'selected' : '' }}>
-									{{ city.label }}
+							{% for city in cities %}
+								<option value="{{ city }}" {{ currentCity == city ? 'selected' : '' }}>
+									{{ city }}
 								</option>
 							{% endfor %}
 						</select>
@@ -84,8 +84,8 @@
 							class="card-hover overflow-hidden flex flex-col">
 							<!-- Image du boat -->
 							<a class="block" href="#">
-								{% if boat.medias|length > 0 %}
-									<img class="w-full h-48 object-cover" src="{{ boat.medias.first.path }}" alt="{{ boat.name }}">
+								{% if boat.media|length > 0 %}
+									<img class="w-full h-48 object-cover" src="{{ asset('uploads/boats/' ~ boat.media.first.imgPath) }}" alt="{{ boat.name }}">
 								{% else %}
 									<div class="w-full h-48 gradient-placeholder flex items-center justify-center">
 										<svg class="w-16 h-16 text-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24">
@@ -94,6 +94,7 @@
 									</div>
 								{% endif %}
 							</a>
+
 
 							<!-- contenu de la carte -->
 							<div
@@ -118,10 +119,36 @@
 								</p>
 
 								{# informations #}
-
+								<div class="border-t border-gray-100 pt-4 mt-auto flex items-center justify-between text-sm text-gray-500">
+									<div
+										class="flex items-center gap-4">
+										{# Capacité #}
+										<div class="flex items-center gap-1" title="Capacité">
+											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z"></path>
+											</svg>
+											<span>{{ boat.maxUser }} </span>
+										</div>
+										{# Ville #}
+										<div class="flex items-center gap-1" title="Ville">
+											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+											</svg>
+											<span>{{ boat.adress.city|default('N/A') }}</span>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					{% endfor %}
+				</div>
+			{% else %}
+				<div class="text-center py-12 bg-gray-50 rounded-lg">
+					<p class="text-xl text-gray-500 mb-4">Aucun bateau ne correspond à vos critères.</p>
+					<a href="{{ path('app_boat_index') }}" class="text-primary hover:underline font-medium">
+						Réinitialiser les filtres
+					</a>
 				</div>
 			{% endif %}
 		</div>
