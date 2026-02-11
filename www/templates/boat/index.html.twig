@@ -24,10 +24,18 @@
 					<div class="calendar-section bg-white p-4 rounded-lg shadow-sm border border-gray-100">
 						<label class="block text-sm font-medium text-gray-700 mb-1">Dates de navigation souhaitées :</label>
 						<div class="flex items-center gap-2">
+							{# On prépare une variable pour l'affichage (format lisible ou brut) #}
+							{% set dateValue = "" %}
+							{% if app.request.query.get('start') and app.request.query.get('end') %}
+								{# On peut formater un message ou simplement laisser flatpickr gérer via les attributs data #}
+								{% set dateValue = app.request.query.get('start')|date('d-m-Y') ~ " au " ~ app.request.query.get('end')|date('d-m-Y') %}
+							{% endif %}
 							<input type="text" id="date-picker" 
-								class="form-select w-full" 
-								placeholder="Sélectionnez vos dates"
-								value="{{ app.request.query.get('start') ? 'Sélectionnez vos dates' : '' }}">
+							class="form-select w-full" 
+							placeholder="Sélectionnez vos dates"
+							value="{{ dateValue }}"
+							data-start="{{ app.request.query.get('start') }}"
+							data-end="{{ app.request.query.get('end') }}">
 							
 							{% if app.request.query.get('start') %}
 								<a href="{{ path('app_boat_index') }}" class="text-xs text-red-500 hover:underline">Effacer</a>
@@ -37,11 +45,17 @@
 
 					<script>
 						document.addEventListener('DOMContentLoaded', function() {
+							const picker = document.getElementById('date-picker');
+							
+							// On récupère les dates stockées dans les attributs data
+							const startDate = picker.getAttribute('data-start');
+							const endDate = picker.getAttribute('data-end');
 							flatpickr("#date-picker", {
 								mode: "range",
 								minDate: "today",
-								dateFormat: "Y-m-d",
+								dateFormat: "d-m-Y",
 								locale: "fr",
+								defaultDate: (startDate && endDate) ? [startDate, endDate] : null,
 								onChange: function(selectedDates, dateStr, instance) {
 									if (selectedDates.length === 2) {
 										// On récupère l'URL actuelle
@@ -104,7 +118,7 @@
 							{% for city in cities %}
 								<option value="{{ city }}" {{ currentCity == city ? 'selected' : '' }}>
 									{{ city }}
-								</option>
+								</option>rental/available_boats.html.twig
 							{% endfor %}
 						</select>
 					</div>

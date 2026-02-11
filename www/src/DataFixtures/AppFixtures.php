@@ -4,8 +4,10 @@ namespace App\DataFixtures;
 
 use App\Entity\Adress;
 use App\Entity\Boat;
+use App\Entity\Formula;
 use App\Entity\Media;
 use App\Entity\Model;
+use App\Entity\Rental;
 use App\Entity\Type;
 use App\Entity\User;
 use DateTime;
@@ -29,6 +31,8 @@ class AppFixtures extends Fixture
         $this->loadModel($manager);
         $this->loadAdress($manager);
         $this->loadBoat($manager);
+        $this->loadFormula($manager);
+        $this->loadRental($manager);
 
 
         $manager->flush();
@@ -483,6 +487,8 @@ class AppFixtures extends Fixture
 
             $boat->setType($this->getReference('type_' . $value['type'], Type::class));
             $boat->setModel($this->getReference('model_' . $value['model'], Model::class));
+            $this->addReference('boat_' . $value['name'], $boat);
+            $boatsReferences[] = 'boat_' . $value['name'];
 
             $manager->persist($boat);
 
@@ -502,4 +508,57 @@ class AppFixtures extends Fixture
             $manager->persist($media);
         }
     }
+
+    public function loadFormula(ObjectManager $manager)
+    {
+        $formulas = [
+            ['title' => 'Matinée', 'description' => 'Location pour une matinée', 'price' => '50'],
+            ['title' => 'Après-midi', 'description' => 'Location pour l\'après-midi', 'price' => '50'],
+            ['title' => 'Journée entière', 'description' => 'Location pour la journée', 'price' => '80'],
+            ['title' => 'Semaine', 'description' => 'Location pour la semaine', 'price' => '500']
+            ];
+        foreach ($formulas as $key => $value) {
+            $formula = new Formula();
+            $formula->setTitle($value ['title']);
+            $formula->setDescription($value['description']);
+            $formula->setPrice($value['price']);
+            $manager->persist($formula);
+            $this->addReference('formula_' . $key, $formula);
+            
+        }
+    }
+
+    public function loadRental(ObjectManager $manager)
+{
+    // 1. Récupération de l'objet Ocean Spirit via sa référence
+    $oceanSpirit = $this->getReference('boat_Ocean Spirit', Boat::class);
+    
+    // 2. Récupération d'un utilisateur et d'une formule
+    $user = $this->getReference('user_0', User::class);
+    $formulaJour = $this->getReference('formula_2', Formula::class); // Journée entière
+    $formulaSemaine = $this->getReference('formula_3', Formula::class); // Semaine
+
+    // --- PREMIÈRE LOCATION (Ex: du 15 au 18 Juin 2026) ---
+    $rental1 = new Rental();
+    $rental1->setRentalStart(new \DateTime('2026-06-15 09:00:00'));
+    $rental1->setRentalEnd(new \DateTime('2026-06-18 18:00:00'));
+    $rental1->setRentalPrice(450);
+    $rental1->setBoat($oceanSpirit);
+    $rental1->setUser($user);
+    $rental1->setFormula($formulaSemaine);
+    $manager->persist($rental1);
+
+    // --- DEUXIÈME LOCATION (Ex: du 25 au 26 Juin 2026) ---
+    // On laisse un espace vide entre le 18 et le 25 pour tester la disponibilité
+    $rental2 = new Rental();
+    $rental2->setRentalStart(new \DateTime('2026-06-25 09:00:00'));
+    $rental2->setRentalEnd(new \DateTime('2026-06-26 18:00:00'));
+    $rental2->setRentalPrice(160);
+    $rental2->setBoat($oceanSpirit);
+    $rental2->setUser($user);
+    $rental2->setFormula($formulaJour);
+    $manager->persist($rental2);
+
+    // Tu peux garder ta boucle for ici pour les autres bateaux aléatoires si tu veux...
+}
 }

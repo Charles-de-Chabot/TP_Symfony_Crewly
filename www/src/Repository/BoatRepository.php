@@ -67,17 +67,16 @@ class BoatRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('b');
 
-    // On crée une sous-requête pour trouver les IDs des bateaux DEJA loués
+    // On crée la sous-requête pour trouver les bateaux OCCUPÉS
     $subQuery = $this->getEntityManager()->createQueryBuilder()
-        ->select('boat.id')
+        ->select('b2.id')
         ->from('App\Entity\Rental', 'r')
-        ->join('r.boat', 'boat')
+        ->join('r.boat', 'b2')
         ->where('r.rentalStart < :end')
-        ->andWhere('r.rentalEnd > :start')
-        ->getDQL();
+        ->andWhere('r.rentalEnd > :start');
 
-    // On retourne les bateaux qui ne sont PAS dans cette liste
-    return $qb->where($qb->expr()->notIn('b.id', $subQuery))
+    // On filtre : Donne moi les bateaux dont l'ID n'est pas dans la liste des occupés
+    return $qb->andWhere($qb->expr()->notIn('b.id', $subQuery->getDQL()))
         ->setParameter('start', $start)
         ->setParameter('end', $end)
         ->getQuery()
