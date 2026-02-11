@@ -15,33 +15,80 @@ use Symfony\Component\Routing\Attribute\Route;
 final class BoatController extends AbstractController
 {
     #[Route(name: 'app_boat_index', methods: ['GET'])]
-    public function index(BoatRepository $boatRepository, TypeRepository $typeRepository, ModelRepository $modelRepository, AdressRepository $adressRepository, Request $request): Response
-    {
-        // ========== EXTRACTION DES PARAMÈTRES D'URL ==========
-        $typeId = $request->query->getInt('type', 0);
-        $modelId = $request->query->getInt('model', 0);
-        $city = $request->query->get('city');
+public function index(
+    BoatRepository $boatRepository, 
+    TypeRepository $typeRepository, 
+    ModelRepository $modelRepository, 
+    AdressRepository $adressRepository, 
+    Request $request
+): Response {
+    // 1. Extraction des paramètres
+    $typeId = $request->query->getInt('type', 0);
+    $modelId = $request->query->getInt('model', 0);
+    $city = $request->query->get('city');
 
-        // Si la ville est '0' (Toutes les villes) ou vide, on passe null au repository pour ne pas filtrer
-        $cityFilter = ($city === '0' || $city === '') ? null : $city;
-        $boats = $boatRepository->findAllWithFilters($typeId, $modelId, $cityFilter);
+    $cityFilter = ($city === '0' || $city === '') ? null : $city;
 
-        // Récupération des villes distinctes pour le filtre
-        $cities = $adressRepository->createQueryBuilder('a')
-            ->select('DISTINCT a.city')
-            ->orderBy('a.city', 'ASC')
-            ->getQuery()
-            ->getSingleColumnResult();
-
-        return $this->render('boat/index.html.twig', [
-            'boats' => $boats,
-            'types' => $typeRepository->findAll(),
-            'models' => $modelRepository->findAll(),
-            'cities' => $cities,
-            // On renvoie les filtres actuels pour les garder sélectionnés dans le formulaire
-            'currentType' => $typeId,
-            'currentModel' => $modelId,
-            'currentCity' => $city ?? '0',
-        ]);
+    /// 2. Logique pour filtrer la liste des MODÈLES
+if ($typeId > 0) {
+    // On cherche les modèles qui sont liés à au moins un bateau de ce type
+    $modelsForSelect = $modelRepository->createQueryBuilder('m')
+        ->innerJoin('App\Entity\Boat', 'b', 'WITH', 'b.model = m')
+        ->where('b.type = :typeId')
+        ->setParameter('typeId', $typeId)
+        ->distinct()
+        ->orderBy('m.label', 'ASC')
+        ->getQuery()
+        ->getResult();
+    
+    // Sécurité : reset du model si incohérent (optionnel mais conseillé)
+    // On vérifie si le modelId actuel est dans la liste des modèles possibles pour ce type
+    $modelIds = array_map(fn($m) => $m->getId(), $modelsForSelect);
+    if ($modelId > 0 && !in_array($modelId, $modelIds)) {
+        $modelId = 0;
     }
+} else {
+    $modelsForSelect = $modelRepository->findBy([], ['label' => 'ASC']);
+}
+
+    // 3. Récupération des bateaux filtrés
+    $boats = $boatRepository->findAllWithFilters($typeId, $modelId, $cityFilter);
+
+    // 4. Récupération des villes
+    $cities = $adressRepository->createQueryBuilder('a')
+        ->select('DISTINCT a.city')
+        ->orderBy('a.city', 'ASC')
+        ->getQuery()
+        ->getSingleColumnResult();
+
+    return $this->render('boat/index.html.twig', [
+        'boats' => $boats,
+        'types' => $typeRepository->findAll(),
+        'models' => $modelsForSelect, // On utilise notre liste filtrée ici
+        'cities' => $cities,
+        'currentType' => $typeId,
+        'currentModel' => $modelId,
+        'currentCity' => $city ?? '0',
+    ]);
+}
+
+    public function check(Request $request, BoatRepository $boatRepo): Response
+{
+    $startStr = $request->query->get('start');
+    $endStr = $request->query->get('end');
+
+    if ($startStr && $endStr) {
+        $start = new \DateTime($startStr);
+        $end = new \DateTime($endStr);
+        $boats = $boatRepo->findAvailableBoats($start, $end);
+    } else {
+        $boats = $boatRepo->findAll(); // Par défaut ou si aucune date n'est choisie
+    }
+
+    return $this->render('rental/available_boats.html.twig', [
+        'boats' => $boats,
+    ]);
+}
+
+    
 }

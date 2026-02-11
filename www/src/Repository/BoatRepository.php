@@ -16,6 +16,7 @@ class BoatRepository extends ServiceEntityRepository
         parent::__construct($registry, Boat::class);
     }
 
+
     public function findAllWithFilters(int $typeId = 0, int $modelId, ?string $city): array
     {
         // ========== CRÉATION DU QUERY BUILDER ==========
@@ -59,5 +60,27 @@ class BoatRepository extends ServiceEntityRepository
         // ========== EXÉCUTION ET RETOUR ==========
 
         return $qb->getQuery()->getResult();
+    }
+
+
+    public function findAvailableBoats(\DateTime $start, \DateTime $end): array
+    {
+        $qb = $this->createQueryBuilder('b');
+
+    // On crée une sous-requête pour trouver les IDs des bateaux DEJA loués
+    $subQuery = $this->getEntityManager()->createQueryBuilder()
+        ->select('boat.id')
+        ->from('App\Entity\Rental', 'r')
+        ->join('r.boat', 'boat')
+        ->where('r.rentalStart < :end')
+        ->andWhere('r.rentalEnd > :start')
+        ->getDQL();
+
+    // On retourne les bateaux qui ne sont PAS dans cette liste
+    return $qb->where($qb->expr()->notIn('b.id', $subQuery))
+        ->setParameter('start', $start)
+        ->setParameter('end', $end)
+        ->getQuery()
+        ->getResult();
     }
 }

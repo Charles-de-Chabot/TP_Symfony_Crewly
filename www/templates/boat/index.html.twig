@@ -8,12 +8,58 @@
 		<div class="container-main">
 			{% include "partials/_messages.html.twig" %}
 			<!-- En tête -->
-			<div class="mb-8">
-				<h1 class="text-4xl text-gray-900 mb-2">Tous les Bateaux</h1>
-				<p class="text-gray-600">Découvrez notre flotte
-				</p>
-			</div>
+			<div class ="grid grid-cols-2 mb-4">
+				<div class="mb-8 px-4">
+					<h1 class="text-4xl text-gray-700 mb-2">Tous les Bateaux</h1>
+					<p class="text-gray-600">Découvrez notre flotte
+					</p>
+				</div>
+				{% if not app.user %}
+					<div class="mb-8 px-4 py-2">
+						<a href="{{ path('app_login') }}" class="text-xl text-blue-900 mb-2 hover:underline hover:text-primary-dark hover:cursor-pointer">
+							<span>Connectez-vous pour accéder à la location</span>
+						</a>
+					</div>
+				{% else %}
+					<div class="calendar-section bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+						<label class="block text-sm font-medium text-gray-700 mb-1">Dates de navigation souhaitées :</label>
+						<div class="flex items-center gap-2">
+							<input type="text" id="date-picker" 
+								class="form-select w-full" 
+								placeholder="Sélectionnez vos dates"
+								value="{{ app.request.query.get('start') ? 'Sélectionnez vos dates' : '' }}">
+							
+							{% if app.request.query.get('start') %}
+								<a href="{{ path('app_boat_index') }}" class="text-xs text-red-500 hover:underline">Effacer</a>
+							{% endif %}
+						</div>
+					</div>
 
+					<script>
+						document.addEventListener('DOMContentLoaded', function() {
+							flatpickr("#date-picker", {
+								mode: "range",
+								minDate: "today",
+								dateFormat: "Y-m-d",
+								locale: "fr",
+								onChange: function(selectedDates, dateStr, instance) {
+									if (selectedDates.length === 2) {
+										// On récupère l'URL actuelle
+										const url = new URL(window.location.href);
+										
+										// On ajoute/met à jour les paramètres de date
+										url.searchParams.set('start', selectedDates[0].toISOString());
+										url.searchParams.set('end', selectedDates[1].toISOString());
+										
+										// On redirige sans perdre les filtres (type, model, city)
+										window.location.href = url.toString();
+									}
+								}
+							});
+						});
+					</script>
+				{% endif %}
+			</div>
 			{# systeme de tri et filtre  #}
 			<div class="card-sm p-6 mb-8">
 				<form class="flex flex-col md:flex-row gap-4" action="{{ path('app_boat_index') }}" method="get">
@@ -127,7 +173,7 @@
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z"></path>
 											</svg>
-											<span>{{ boat.maxUser }} </span>
+											<span>{{ boat.maxUser }}</span>
 										</div>
 										{# Ville #}
 										<div class="flex items-center gap-1" title="Ville">
