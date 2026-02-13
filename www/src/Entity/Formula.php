@@ -25,11 +25,6 @@ class Formula
     #[ORM\Column]
     private ?int $price = null;
 
-    /**
-     * @var Collection<int, Rental>
-     */
-    #[ORM\OneToMany(targetEntity: Rental::class, mappedBy: 'formula')]
-    private Collection $rentals;
 
     /**
      * @var Collection<int, Boat>
@@ -37,10 +32,15 @@ class Formula
     #[ORM\ManyToMany(targetEntity: Boat::class, mappedBy: 'formula')]
     private Collection $boats;
 
+    /**
+     * @var Collection<int, Rental>
+     */
+    #[ORM\ManyToMany(targetEntity: Rental::class, mappedBy: 'formulas')]
+    private Collection $rentals;
+
     public function __construct()
     {
         $this->rentals = new ArrayCollection();
-        $this->boats = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -85,36 +85,6 @@ class Formula
     }
 
     /**
-     * @return Collection<int, Rental>
-     */
-    public function getRentals(): Collection
-    {
-        return $this->rentals;
-    }
-
-    public function addRental(Rental $rental): static
-    {
-        if (!$this->rentals->contains($rental)) {
-            $this->rentals->add($rental);
-            $rental->setFormula($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRental(Rental $rental): static
-    {
-        if ($this->rentals->removeElement($rental)) {
-            // set the owning side to null (unless already changed)
-            if ($rental->getFormula() === $this) {
-                $rental->setFormula(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Boat>
      */
     public function getBoats(): Collection
@@ -136,6 +106,33 @@ class Formula
     {
         if ($this->boats->removeElement($boat)) {
             $boat->removeFormula($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rental>
+     */
+    public function getRentals(): Collection
+    {
+        return $this->rentals;
+    }
+
+    public function addRental(Rental $rental): static
+    {
+        if (!$this->rentals->contains($rental)) {
+            $this->rentals->add($rental);
+            $rental->addFormula($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRental(Rental $rental): static
+    {
+        if ($this->rentals->removeElement($rental)) {
+            $rental->removeFormula($this);
         }
 
         return $this;

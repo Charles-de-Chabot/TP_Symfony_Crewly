@@ -545,7 +545,7 @@ class AppFixtures extends Fixture
     $rental1->setRentalPrice(450);
     $rental1->setBoat($oceanSpirit);
     $rental1->setUser($user);
-    $rental1->setFormula($formulaSemaine);
+    $rental1->addFormula($formulaSemaine);
     $manager->persist($rental1);
 
     // --- DEUXIÈME LOCATION (Ex: du 25 au 26 Juin 2026) ---
@@ -556,7 +556,7 @@ class AppFixtures extends Fixture
     $rental2->setRentalPrice(160);
     $rental2->setBoat($oceanSpirit);
     $rental2->setUser($user);
-    $rental2->setFormula($formulaJour);
+    $rental2->addFormula($formulaJour);
     $manager->persist($rental2);
 
     // Tu peux garder ta boucle for ici pour les autres bateaux aléatoires si tu veux...

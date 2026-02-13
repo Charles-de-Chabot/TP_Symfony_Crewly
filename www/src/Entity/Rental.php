@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RentalRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RentalRepository::class)]
@@ -25,11 +27,20 @@ class Rental
     #[ORM\ManyToOne(inversedBy: 'rentals')]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'rentals')]
-    private ?Formula $formula = null;
 
     #[ORM\ManyToOne(inversedBy: 'rentals')]
     private ?Boat $boat = null;
+
+    /**
+     * @var Collection<int, Formula>
+     */
+    #[ORM\ManyToMany(targetEntity: Formula::class, inversedBy: 'rentals')]
+    private Collection $formulas;
+
+    public function __construct()
+    {
+        $this->formulas = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -84,18 +95,6 @@ class Rental
         return $this;
     }
 
-    public function getFormula(): ?Formula
-    {
-        return $this->formula;
-    }
-
-    public function setFormula(?Formula $formula): static
-    {
-        $this->formula = $formula;
-
-        return $this;
-    }
-
     public function getBoat(): ?Boat
     {
         return $this->boat;
@@ -104,6 +103,30 @@ class Rental
     public function setBoat(?Boat $boat): static
     {
         $this->boat = $boat;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Formula>
+     */
+    public function getFormulas(): Collection
+    {
+        return $this->formulas;
+    }
+
+    public function addFormula(Formula $formula): static
+    {
+        if (!$this->formulas->contains($formula)) {
+            $this->formulas->add($formula);
+        }
+
+        return $this;
+    }
+
+    public function removeFormula(Formula $formula): static
+    {
+        $this->formulas->removeElement($formula);
 
         return $this;
     }

@@ -93,8 +93,11 @@
 
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                <form method="post" action="{{ path('app_rental_new', {'id': boat.id}) }}" class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                     <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <input type="hidden" name="start" id="input-start">
+                        <input type="hidden" name="end" id="input-end">
+
                         <div class="sm:flex sm:items-start">
                             <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary-light sm:mx-0 sm:h-10 sm:w-10">
                                 <svg class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -133,7 +136,7 @@
                                             {% for formula in formulas %}
                                                 <label class="formula-item relative flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors" data-formula-id="{{ formula.id }}" data-price="{{ formula.price }}">
                                                     <div class="flex items-center h-5">
-                                                        <input name="rental-formula" type="radio" value="{{ formula.id }}" class="h-4 w-4 text-primary border-gray-300 focus:ring-primary">
+                                                        <input name="formulas[]" type="radio" value="{{ formula.id }}" class="h-4 w-4 text-primary border-gray-300 focus:ring-primary">
                                                     </div>
                                                     <div class="ml-3 text-sm w-full">
                                                         <div class="flex justify-between items-center">
@@ -165,10 +168,10 @@
                         </div>
                     </div>
                     <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                        <button type="button" class="btn-primary w-full sm:ml-3 sm:w-auto">Confirmer</button>
+                        <button type="submit" class="btn-primary w-full sm:ml-3 sm:w-auto">Confirmer</button>
                         <button type="button" id="btn-close-modal" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Annuler</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -211,6 +214,10 @@
                     const endFormatted = new Date(endDate).toLocaleDateString('fr-FR', options);
                     modalDates.textContent = `Du ${startFormatted} au ${endFormatted}`;
                     modalDates.classList.remove('text-error');
+                    
+                    // Remplissage des inputs cachés pour le formulaire
+                    document.getElementById('input-start').value = startDate;
+                    document.getElementById('input-end').value = endDate;
 
                     // Logique d'affichage des formules
                     const start = new Date(startDate);
@@ -220,9 +227,8 @@
                     // Calcul de la durée en jours
                     const diffTime = Math.abs(end - start);
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    // Durée inclusive (si même jour = 1 jour, sinon diff + 1)
-                    // Ex: du 1er au 2 = 2 jours
-                    const duration = isSameDay ? 1 : diffDays + 1;
+                    // Durée (si même jour = 1 jour, sinon diff)
+                    const duration = isSameDay ? 1 : diffDays;
 
                     const weeks = Math.floor(duration / 7);
                     const restDays = duration % 7;
@@ -244,7 +250,7 @@
                             input.checked = false; // Reset selection
                             input.type = 'radio'; // Reset type to radio
                             input.onclick = null; // Reset click handler
-                            input.name = 'rental-formula'; // Reset name
+                            input.name = 'formulas[]'; // Reset name
                         }
 
                         if (isMixedMode) {
@@ -255,8 +261,8 @@
                                 item.classList.add('border-primary', 'bg-primary-lighter');
                                 mixedPrice3 = parseFloat(item.dataset.price);
                                 if (input) {
-                                    input.type = 'radio'; // Keep radio style
-                                    input.name = 'rental-formula-' + formulaId; // Allow multiple selection
+                                    input.type = 'checkbox'; // Change to checkbox for multiple selection
+                                    input.name = 'formulas[]';
                                     input.checked = true;
                                     input.disabled = false; // Enable for styling
                                     input.onclick = (e) => e.preventDefault(); // Prevent user interaction
@@ -267,8 +273,8 @@
                                 item.classList.add('border-primary', 'bg-primary-lighter');
                                 mixedPrice4 = parseFloat(item.dataset.price);
                                 if (input) {
-                                    input.type = 'radio'; // Keep radio style
-                                    input.name = 'rental-formula-' + formulaId; // Allow multiple selection
+                                    input.type = 'checkbox'; // Change to checkbox for multiple selection
+                                    input.name = 'formulas[]';
                                     input.checked = true;
                                     input.disabled = false; // Enable for styling
                                     input.onclick = (e) => e.preventDefault(); // Prevent user interaction
@@ -349,7 +355,7 @@
 
             // Gestion du changement de formule pour le calcul du prix
             formulaItems.forEach(item => {
-                const input = item.querySelector('input[type="radio"]');
+                const input = item.querySelector('input');
                 if(!input) return;
 
                 input.addEventListener('change', () => {
@@ -373,7 +379,7 @@
                         const isSameDay = start.toDateString() === end.toDateString();
                         const diffTime = Math.abs(end - start);
                         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                        const duration = isSameDay ? 1 : diffDays + 1;
+                        const duration = isSameDay ? 1 : diffDays;
 
                         let total = 0;
 
