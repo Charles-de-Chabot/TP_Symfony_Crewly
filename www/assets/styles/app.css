@@ -1,59 +1,95 @@
 @import "tailwindcss";
 @source not "../../public";
 
+
+/* ============================================
+    Déclaration de la police d'écriture
+   ============================================ */
+
+
+/* 1. Déclaration de la police Variable (Standard) */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('fonts/Montserrat-VariableFont_wght.ttf') format('truetype-variations');
+    font-weight: 100 900; /* Couvre toutes les épaisseurs de 100 à 900 */
+    font-style: normal;
+}
+
+/* 2. Déclaration de la police Variable (Italique) */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('fonts/Montserrat-Italic-VariableFont_wght.ttf') format('truetype-variations');
+    font-weight: 100 900;
+    font-style: italic;
+}
+
+/* 3. Application à ton site */
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    color: #334E68; /* Gris-Bleu profond - Plus harmonieux */
+    line-height: 1.6;
+}
+
+/* Configuration typographique moderne */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    color: #102A43; /* Bleu Nuit Abyssal - Très élégant et autoritaire */
+    line-height: 1.2;
+}
+
+h1 { font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-weight: 600; }
+
+.prix {
+    font-weight: 700; /* Bold */
+    color: var(--color-primary-dark); /* Utilise la variable pour la cohérence */
+}
+
 /* ============================================
    VARIABLES DE COULEURS - CHARTE GRAPHIQUE
    ============================================ */
 
 @theme {
     /* Couleurs principales */
-    --color-bg-main: #F8FAFC;        /* Background principal - Gris très clair */
-    --color-text-main: #1F2933;       /* Texte principal - Gris foncé */
-    --color-primary: #2563EB;          /* Primaire - Bleu moderne */
-    --color-primary-hover: #1D4ED8;   /* Primaire hover (plus foncé) */
-    --color-primary-light: #DBEAFE;   /* Primaire clair (pour backgrounds) */
-    --color-primary-lighter: #EFF6FF; /* Primaire très clair */
-    --color-primary-dark: #1E40AF;     /* Primaire foncé (pour textes sur fond clair) */
-    --color-accent: #7C3AED;           /* Accent dynamique - Violet doux */
-    --color-accent-hover: #6D28D9;     /* Accent hover */
-    --color-accent-light: #EDE9FE;     /* Accent clair */
-    --color-accent-lighter: #F5F3FF;   /* Accent très clair */
+    --color-bg-main: #F0F4F8;          /* Background - Brume de mer (Très léger bleu gris) */
+    --color-text-main: #334E68;        /* Texte - Gris Bleu Profond */
+    --color-primary: #00509D;          /* Primaire - Bleu Amiral (Mariner Blue) */
+    --color-primary-hover: #003E7E;    /* Primaire hover - Bleu Royal Foncé */
+    --color-primary-light: #D9E2EC;    /* Primaire clair - Gris Perle */
+    --color-primary-lighter: #F0F4F8;  /* Primaire très clair - Écume */
+    --color-primary-dark: #102A43;     /* Primaire foncé - Bleu Nuit */
+    --color-accent: #00C2D1;           /* Accent - Cyan Tropique (Vibrant et Moderne) */
+    --color-accent-hover: #0099A6;     /* Accent hover - Lagon Profond */
+    --color-accent-light: #E0FCFF;     /* Accent clair - Eau Cristalline */
+    --color-accent-lighter: #F0FDFF;   /* Accent très clair - Glace */
     
     /* Couleurs d'état */
-    --color-success: #16A34A;          /* Succès - Vert */
-    --color-success-light: #D1FAE5;    /* Succès clair */
-    --color-success-border: #10B981;   /* Bordure succès */
-    --color-alert: #F59E0B;            /* Alerte - Orange */
-    --color-alert-light: #FEF3C7;      /* Alerte clair */
-    --color-alert-border: #F59E0B;     /* Bordure alerte */
-    --color-error: #DC2626;            /* Erreur - Rouge */
-    --color-error-light: #FEE2E2;      /* Erreur clair */
-    --color-error-border: #EF4444;     /* Bordure erreur */
-    --color-error-input: #FCA5A5;      /* Erreur input (rouge clair) */
+    --color-success: #2CB67D;          /* Succès - Vert Émeraude (Plus doux) */
+    --color-success-light: #E3F9E5;    /* Succès clair */
+    --color-success-border: #2CB67D;   /* Bordure succès */
+    --color-alert: #FFCB47;            /* Alerte - Jaune Soleil (Plus chaud) */
+    --color-alert-light: #FFF8E1;      /* Alerte clair */
+    --color-alert-border: #FFCB47;     /* Bordure alerte */
+    --color-error: #E53E3E;            /* Erreur - Rouge Corail */
+    --color-error-light: #FFE3E3;      /* Erreur clair */
+    --color-error-border: #E53E3E;     /* Bordure erreur */
+    --color-error-input: #FC8181;      /* Erreur input */
     
     /* Couleurs neutres */
-    --color-border: #E5E7EB;           /* Bordures - Gris clair */
-    --color-gray-50: #F9FAFB;           /* Gris très clair */
-    --color-gray-100: #F3F4F6;         /* Gris clair */
-    --color-gray-200: #E5E7EB;         /* Gris moyen clair */
-    --color-gray-300: #D1D5DB;         /* Gris moyen */
-    --color-gray-400: #9CA3AF;         /* Gris moyen foncé */
-    --color-gray-500: #6B7280;         /* Gris foncé */
-    --color-gray-600: #4B5563;         /* Gris très foncé */
-    --color-gray-700: #374151;         /* Gris extra foncé */
-    --color-gray-900: #1F2933;         /* Gris presque noir (texte principal) */
+    --color-border: #D9E2EC;           /* Bordures - Gris bleuté */
+    --color-gray-50: #F0F4F8;          /* Gris très clair (Base fond) */
+    --color-gray-100: #D9E2EC;         /* Gris clair */
+    --color-gray-200: #BCCCDC;         /* Gris moyen clair */
+    --color-gray-300: #9FB3C8;         /* Gris moyen */
+    --color-gray-400: #829AB1;         /* Gris moyen foncé */
+    --color-gray-500: #627D98;         /* Gris foncé */
+    --color-gray-600: #486581;         /* Gris très foncé */
+    --color-gray-700: #334E68;         /* Gris extra foncé (Texte) */
+    --color-gray-900: #102A43;         /* Gris-Bleu nuit (Titres) */
 }
 
-
-/* Application de la police Buckwheat TC aux titres */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: 'Buckwheat TC', sans-serif;
-}
 
 /* ============================================
    CONTENEURS ET LAYOUTS
@@ -258,7 +294,7 @@ h6 {
 }
 
 .btn-danger:hover:not(:disabled) {
-    background-color: #B91C1C;
+    background-color: #C53030;
     transform: translateY(-1px);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
@@ -616,7 +652,7 @@ h6 {
 }
 
 .vote-button.voted:hover {
-    background-color: #FEE2E2;
+    background-color: #FFE3E3;
     @apply text-error;
 }
 

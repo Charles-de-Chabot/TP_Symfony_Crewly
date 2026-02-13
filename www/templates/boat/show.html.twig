@@ -2,7 +2,7 @@
 
 {% block title %}
 	{{ boat.name }}
-	- CreativeHub
+	- Crewly
 {% endblock %}
 
 {% block body %}
@@ -19,6 +19,57 @@
 				</svg>
 				<span>Retour à la flotte</span>
 			</a>
+
+            {# Détail du bateau #}
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="md:flex">
+                    <div class="md:w-1/2 h-64 md:h-auto relative">
+                        {% if boat.media %}
+                            <img class="absolute inset-0 w-full h-full object-cover" src="{{ asset('uploads/boats/' ~ boat.media.first.imgPath) }}" alt="{{ boat.name }}">
+                        {% else %}
+                            <div class="absolute inset-0 w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
+                                <span class="text-sm">Pas d'image</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="p-8 md:w-1/2">
+                        <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+                            {{ boat.type.label|default(boat.type) }} • {{ boat.model.label|default(boat.model) }}
+                        </div>
+                        <h1 class="block mt-1 text-2xl leading-tight font-bold text-gray-900">{{ boat.name }}</h1>
+                        <p class="mt-2 text-gray-600">{{ boat.description }}</p>
+
+                        <div class="mt-4 flex items-center text-gray-600">
+                            <span class="font-semibold mr-2">Ville :</span> {{ adress.city|default('Non spécifiée') }}
+                        </div>
+
+                        <div class="mt-6 border-t border-gray-200 pt-6">
+                            <dl class="grid grid-cols-2 gap-x-4 gap-y-4">
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Capacité</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ boat.maxUser }} personnes</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Dimensions</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ boat.boatLength }}m x {{ boat.boatWidth }}m</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Tirant d'eau</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ boat.boatDraught }}m</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Couchages</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ boat.cabineNumber }} cabines / {{ boat.bedNumber }} lits</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Moteur</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ boat.powerEngine }} CV ({{ boat.fuel }})</dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </div>

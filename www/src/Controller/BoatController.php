@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Adress;
 use App\Entity\Boat;
 use App\Repository\BoatRepository;
 use App\Repository\ModelRepository;
@@ -86,22 +87,33 @@ final class BoatController extends AbstractController
     }
     
     #[Route('/{id}', name: 'app_boat_show', methods: ['GET'])]
-    public function show(int $id, BoatRepository $boatRepository): Response
+    public function show(int $id, BoatRepository $boatRepository, AdressRepository $adressRepository): Response
     {
         // ========== RÉCUPÉRATION DU boat ==========
 
         // findActive() : custom query pour boats actifs seulement
         $boat = $boatRepository->findOneBy(['id' => $id]);
+        $adress = $boat ? $adressRepository->findOneBy(['id' => $boat->getAdress()]) : null;
+
 
         // Vérifier que le boat existe
         if (!$boat) {
             $this->addFlash('error', "Ce défi n'existe pas");
             return $this->redirectToRoute('app_boat_index', [], Response::HTTP_SEE_OTHER);
         }
+
+        //Verifier que l'adresss existe
+        if(!$adress){
+            $this->addFlash('error', "Ce défi n'existe pas");
+            return $this->redirectToRoute('app_boat_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+
         // ========== RENDU ==========
 
         return $this->render('boat/show.html.twig', [
             'boat' => $boat,
+            'adress' => $adress
         ]);
     }
 
