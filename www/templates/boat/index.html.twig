@@ -4,184 +4,163 @@
 {% endblock %}
 
 {% block body %}
-	<div class="min-h-screen bg-main py-8">
-		<div class="container-main">
-			{% include "partials/_messages.html.twig" %}
-			<!-- En tête -->
-			<div class ="grid grid-cols-2 mb-4">
-				<div class="mb-8 px-4">
-					<h1 class="text-4xl text-gray-700 mb-2">Tous les Bateaux</h1>
-					<p class="text-gray-600">Découvrez notre flotte
-					</p>
-				</div>
-				{% if not app.user %}
-					<div class="mb-8 px-4 py-2">
-						<a href="{{ path('app_login') }}" class="text-xl text-blue-900 mb-2 hover:underline hover:text-primary-dark hover:cursor-pointer">
-							<span>Connectez-vous pour accéder à la location</span>
-						</a>
-					</div>
-				{% else %}
-					<div class="calendar-section bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-						<label class="block text-sm font-medium text-gray-700 mb-1">Dates de navigation souhaitées :</label>
-						<div class="flex items-center gap-2">
-							{# On prépare une variable pour l'affichage (format lisible ou brut) #}
-							{% set dateValue = "" %}
-							{% if app.request.query.get('start') and app.request.query.get('end') %}
-								{# On peut formater un message ou simplement laisser flatpickr gérer via les attributs data #}
-								{% set dateValue = app.request.query.get('start')|date('d-m-Y') ~ " au " ~ app.request.query.get('end')|date('d-m-Y') %}
-							{% endif %}
-							<input type="text" id="date-picker" 
-							class="form-select w-full" 
-							placeholder="Sélectionnez vos dates"
-							value="{{ dateValue }}"
-							data-start="{{ app.request.query.get('start') }}"
-							data-end="{{ app.request.query.get('end') }}">
-							
-							{% if app.request.query.get('start') %}
-								<a href="{{ path('app_boat_index') }}" class="text-xs text-red-500 hover:underline">Effacer</a>
-							{% endif %}
-						</div>
-					</div>
+    {# Hero Section #}
+    <div class="bg-primary-dark relative overflow-hidden pb-24 pt-16">
+        <div class="absolute inset-0 bg-gradient-to-br from-primary-dark to-primary opacity-90 z-0"></div>
+        {# Optionnel : Image de fond si disponible #}
+        {# <div class="absolute inset-0 z-0 opacity-20" style="background-image: url('...'); background-size: cover;"></div> #}
+        
+        <div class="container-main relative z-10 text-center md:text-left">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
+                Naviguez vers l'aventure
+            </h1>
+            <p class="text-lg text-primary-light max-w-2xl mx-auto md:mx-0">
+                Découvrez notre flotte de bateaux d'exception et réservez votre prochaine escapade en mer.
+            </p>
+        </div>
+    </div>
 
-					<script>
-						document.addEventListener('DOMContentLoaded', function() {
-							const picker = document.getElementById('date-picker');
-							
-							// On récupère les dates stockées dans les attributs data
-							const startDate = picker.getAttribute('data-start');
-							const endDate = picker.getAttribute('data-end');
-							flatpickr("#date-picker", {
-								mode: "range",
-								minDate: "today",
-								dateFormat: "d-m-Y",
-								locale: "fr",
-								defaultDate: (startDate && endDate) ? [startDate, endDate] : null,
-								onChange: function(selectedDates, dateStr, instance) {
-									if (selectedDates.length === 2) {
-										// On récupère l'URL actuelle
-										const url = new URL(window.location.href);
-										
-										// On ajoute/met à jour les paramètres de date
-										url.searchParams.set('start', selectedDates[0].toISOString());
-										url.searchParams.set('end', selectedDates[1].toISOString());
-										
-										// On redirige sans perdre les filtres (type, model, city)
-										window.location.href = url.toString();
-									}
-								}
-							});
-						});
-					</script>
-				{% endif %}
-			</div>
-			{# systeme de tri et filtre  #}
-			<div class="card-sm p-6 mb-8">
-				<form class="flex flex-col md:flex-row gap-4" action="{{ path('app_boat_index') }}" method="get">
-					<div
-						class="flex-1">
-						{# filtre de type #}
-						<label for="type" class="form-label">
-							Type
-						</label>
-						<select name="type" id="type" class="form-select" onchange="this.form.submit()">
-							<option value="0" {{ currentType == 0 ? 'selected' : '' }}>Tous les types</option>
-							{% for type in types %}
-								<option value="{{ type.id }}" {{ currentType == type.id ? 'selected' : '' }}>
-									{{ type.label }}
-								</option>
-							{% endfor %}
-						</select>
-					</div>
-					<div
-						class="flex-1">
-						{# filtre de model #}
-						<label for="model" class="form-label">
-							Model
-						</label>
-						<select name="model" id="model" class="form-select" onchange="this.form.submit()">
-							<option value="0" {{ currentModel == 0 ? 'selected' : '' }}>Tous les modèles</option>
-							{% for model in models %}
-								<option value="{{ model.id }}" {{ currentModel == model.id ? 'selected' : '' }}>
-									{{ model.label }}
-								</option>
-							{% endfor %}
-						</select>
-					</div>
-					<div
-						class="flex-1">
-						{# filtre de city #}
-						<label for="city" class="form-label">
-							Ville
-						</label>
-						<select name="city" id="city" class="form-select" onchange="this.form.submit()">
-							<option value="0" {{ currentCity == '0' ? 'selected' : '' }}>Toutes les villes</option>
-							{% for city in cities %}
-								<option value="{{ city }}" {{ currentCity == city ? 'selected' : '' }}>
-									{{ city }}
-								</option>rental/available_boats.html.twig
-							{% endfor %}
-						</select>
-					</div>
+    <div class="min-h-screen bg-gray-50 pb-12">
+        <div class="container-main -mt-16 relative z-20">
+            {% include "partials/_messages.html.twig" %}
 
+            {# Search & Filter Card #}
+            <div class="bg-white rounded-xl shadow-xl p-6 md:p-8 mb-12 border border-gray-100">
+                
+                {# Section Dates / Login #}
+                <div class="mb-8 pb-8 border-b border-gray-100">
+                    {% if not app.user %}
+                        <div class="flex flex-col md:flex-row items-center justify-between bg-primary-lighter rounded-lg p-6 border border-primary-light">
+                            <div class="mb-4 md:mb-0">
+                                <h3 class="text-lg font-bold text-primary-dark">Prêt à naviguer ?</h3>
+                                <p class="text-primary text-sm">Connectez-vous pour vérifier les disponibilités et réserver.</p>
+                            </div>
+                            <a href="{{ path('app_login') }}" class="btn-primary">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                                Se connecter
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="w-full">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Dates de navigation</label>
+                            <div class="relative">
+                                {% set dateValue = "" %}
+                                {% if app.request.query.get('start') and app.request.query.get('end') %}
+                                    {% set dateValue = app.request.query.get('start')|date('d/m/Y') ~ " au " ~ app.request.query.get('end')|date('d/m/Y') %}
+                                {% endif %}
+                                <div class="flex items-center">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                    <input type="text" id="date-picker" 
+                                        class="form-input !pl-12" 
+                                        placeholder="Sélectionnez vos dates de départ et de retour"
+                                        value="{{ dateValue }}"
+                                        data-start="{{ app.request.query.get('start') }}"
+                                        data-end="{{ app.request.query.get('end') }}">
+                                    
+                                    {% if app.request.query.get('start') %}
+                                        <a href="{{ path('app_boat_index') }}" onclick="localStorage.removeItem('startDate'); localStorage.removeItem('endDate');" class="ml-3 text-sm text-error hover:text-red-700 font-medium whitespace-nowrap">
+                                            Effacer
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {# Script déplacé en bas de page #}
+                    {% endif %}
+                </div>
 
-					{# bouton de reinitialisation  #}
-					{% if currentType != 0 or currentModel != 0 or currentCity != '0' %}
-						<div class="flex items-end">
-							<a href="{{ path('app_boat_index') }}" class="px-4 py-2 transition-colors link-nav">
-								Réinitialiser
-							</a>
-						</div>
-					{% endif %}
-
-				</form>
-			</div>
+                {# Filtres #}
+                <form class="grid grid-cols-1 md:grid-cols-4 gap-6" action="{{ path('app_boat_index') }}" method="get">
+                    <div>
+                        <label for="type" class="form-label">Type de bateau</label>
+                        <select name="type" id="type" class="form-select" onchange="this.form.submit()">
+                            <option value="0" {{ currentType == 0 ? 'selected' : '' }}>Tous les types</option>
+                            {% for type in types %}
+                                <option value="{{ type.id }}" {{ currentType == type.id ? 'selected' : '' }}>{{ type.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="model" class="form-label">Modèle</label>
+                        <select name="model" id="model" class="form-select" onchange="this.form.submit()">
+                            <option value="0" {{ currentModel == 0 ? 'selected' : '' }}>Tous les modèles</option>
+                            {% for model in models %}
+                                <option value="{{ model.id }}" {{ currentModel == model.id ? 'selected' : '' }}>{{ model.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="city" class="form-label">Destination</label>
+                        <select name="city" id="city" class="form-select" onchange="this.form.submit()">
+                            <option value="0" {{ currentCity == '0' ? 'selected' : '' }}>Toutes les villes</option>
+                            {% for city in cities %}
+                                <option value="{{ city }}" {{ currentCity == city ? 'selected' : '' }}>{{ city }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="flex items-end">
+                        {% if currentType != 0 or currentModel != 0 or currentCity != '0' %}
+                            <a href="{{ path('app_boat_index') }}" class="btn-secondary w-full justify-center">
+                                Réinitialiser
+                            </a>
+                        {% else %}
+                            <div class="w-full h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-sm">
+                                Filtres inactifs
+                            </div>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
 
 			<!-- Liste des boats -->
+            <div class="mb-6 flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-gray-900">Résultats de recherche</h2>
+                <span class="badge-category">{{ boats|length }} bateau(x)</span>
+            </div>
+
 			{% if boats|length > 0 %}
 				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 					{% for boat in boats %}
-						<div
-							class="card-hover overflow-hidden flex flex-col">
+						<div class="card-hover overflow-hidden flex flex-col h-full border border-gray-100">
 							<!-- Image du boat -->
-							<a class="block" href="{{ path('app_boat_show', {id: boat.id}) }}">
+							<a class="block relative group" href="{{ path('app_boat_show', {id: boat.id}) }}">
 								{% if boat.media|length > 0 %}
-									<img class="w-full h-48 object-cover" src="{{ asset('uploads/boats/' ~ boat.media.first.imgPath) }}" alt="{{ boat.name }}">
+									<img class="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105" src="{{ asset('uploads/boats/' ~ boat.media.first.imgPath) }}" alt="{{ boat.name }}">
 								{% else %}
-									<div class="w-full h-48 gradient-placeholder flex items-center justify-center">
+									<div class="w-full h-56 gradient-placeholder flex items-center justify-center">
 										<svg class="w-16 h-16 text-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
 										</svg>
 									</div>
 								{% endif %}
+                                <div class="absolute top-4 right-4">
+                                    <span class="badge-category-sm bg-white/90 backdrop-blur-sm text-primary shadow-sm">
+                                        {{ boat.type.label }}
+                                    </span>
+                                </div>
 							</a>
 
 
 							<!-- contenu de la carte -->
-							<div
-								class="p-6 flex flex-col flex-1">
-								<!-- type -->
-								<div class="mb-3">
-									<span class="badge-category-sm bg-primary-light text-primary">
-										{{ boat.type.label }}
-									</span>
-								</div>
-
+							<div class="p-6 flex flex-col flex-1">
 								<!-- titre -->
-								<h3 class="text-xl text-gray-900 mb-2 line-clamp-2">
-									<a class="link-nav transition-all duration-200 hover:underline" href="{{ path('app_boat_show', {id: boat.id}) }}">
+								<h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-1">
+									<a class="hover:text-primary transition-colors" href="{{ path('app_boat_show', {id: boat.id}) }}">
 										{{ boat.name }}
 									</a>
 								</h3>
 
 								<!-- description -->
-								<p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">
+								<p class="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">
 									{{ boat.description|default("Pas de descption") }}
 								</p>
 
 								{# informations #}
 								<div class="border-t border-gray-100 pt-4 mt-auto flex items-center justify-between text-sm text-gray-500">
-									<div
-										class="flex items-center gap-4">
+									<div class="flex items-center gap-4">
 										{# Capacité #}
 										<div class="flex items-center gap-1" title="Capacité">
 											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
@@ -204,14 +183,49 @@
 					{% endfor %}
 				</div>
 			{% else %}
-				<div class="text-center py-12 bg-gray-50 rounded-lg">
-					<p class="text-xl text-gray-500 mb-4">Aucun bateau ne correspond à vos critères.</p>
-					<a href="{{ path('app_boat_index') }}" class="text-primary hover:underline font-medium">
+				<div class="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-100">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+					<h3 class="text-lg font-medium text-gray-900 mb-2">Aucun résultat trouvé</h3>
+					<p class="text-gray-500 mb-6">Essayez de modifier vos filtres ou vos dates de recherche.</p>
+					<a href="{{ path('app_boat_index') }}" class="btn-secondary">
 						Réinitialiser les filtres
 					</a>
 				</div>
 			{% endif %}
 		</div>
 	</div>
+
+    {% if app.user %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const picker = document.getElementById('date-picker');
+            if(!picker) return;
+            
+            const startDate = picker.getAttribute('data-start');
+            const endDate = picker.getAttribute('data-end');
+            
+            flatpickr("#date-picker", {
+                mode: "range",
+                minDate: "today",
+                dateFormat: "d/m/Y",
+                locale: "fr",
+                defaultDate: (startDate && endDate) ? [startDate, endDate] : null,
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length === 2) {
+                        localStorage.setItem('startDate', selectedDates[0].toISOString());
+                        localStorage.setItem('endDate', selectedDates[1].toISOString());
+
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('start', selectedDates[0].toISOString());
+                        url.searchParams.set('end', selectedDates[1].toISOString());
+                        window.location.href = url.toString();
+                    }
+                }
+            });
+        });
+    </script>
+    {% endif %}
 
 {% endblock %}

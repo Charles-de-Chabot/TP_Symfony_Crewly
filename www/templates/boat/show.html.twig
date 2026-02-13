@@ -37,6 +37,12 @@
                             {{ boat.type.label|default(boat.type) }} • {{ boat.model.label|default(boat.model) }}
                         </div>
                         <h1 class="block mt-1 text-2xl leading-tight font-bold text-gray-900">{{ boat.name }}</h1>
+
+                        {# Conteneur pour les dates (rempli par JS via localStorage) #}
+                        <div id="booking-dates-container" class="hidden mt-3 inline-flex items-center px-3 py-1 rounded-lg bg-primary-light text-primary-dark text-sm font-medium">
+                            <span class="mr-2">📅</span> <span id="booking-dates-text"></span>
+                        </div>
+
                         <p class="mt-2 text-gray-600">{{ boat.description }}</p>
 
                         <div class="mt-4 flex items-center text-gray-600">
@@ -67,6 +73,13 @@
                                 </div>
                             </dl>
                         </div>
+
+                        {# Bouton Réserver #}
+                        <div class="mt-8 pt-6 border-t border-gray-100">
+                            <button id="btn-reserve" class="btn-primary w-full py-3 text-lg shadow-lg transform transition hover:-translate-y-1">
+                                Réserver maintenant
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -74,4 +87,311 @@
         </div>
     </div>
 
+    {# Modal de réservation #}
+    <div id="reservation-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-900/40 transition-opacity"></div>
+
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                    <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary-light sm:mx-0 sm:h-10 sm:w-10">
+                                <svg class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                                </svg>
+                            </div>
+                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                                <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Récapitulatif de la réservation</h3>
+                                <div class="mt-4 space-y-4">
+                                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                        <h4 class="font-bold text-gray-900">{{ boat.name }}</h4>
+                                        <p class="text-sm text-gray-500">{{ boat.type.label|default(boat.type) }} • {{ boat.model.label|default(boat.model) }}</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-500">Dates sélectionnées</h5>
+                                        <p id="modal-dates" class="text-gray-900 font-medium mt-1">Aucune date sélectionnée</p>
+                                    </div>
+
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-500">Lieu de départ</h5>
+                                        <p class="text-gray-900 mt-1">
+                                            {% if adress %}
+                                                {{ adress.number|default('') }} {{ adress.street|default('') }}<br>
+                                                {{ adress.zipCode|default('') }} {{ adress.city|default('') }}
+                                            {% else %}
+                                                Adresse non renseignée
+                                            {% endif %}
+                                        </p>
+                                    </div>
+
+                                    {# Sélection de la formule #}
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Formule de location</label>
+                                        <div id="formulas-list" class="space-y-2">
+                                            {% for formula in formulas %}
+                                                <label class="formula-item relative flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors" data-formula-id="{{ formula.id }}" data-price="{{ formula.price }}">
+                                                    <div class="flex items-center h-5">
+                                                        <input name="rental-formula" type="radio" value="{{ formula.id }}" class="h-4 w-4 text-primary border-gray-300 focus:ring-primary">
+                                                    </div>
+                                                    <div class="ml-3 text-sm w-full">
+                                                        <div class="flex justify-between items-center">
+                                                            <span class="font-bold text-gray-900">{{ formula.title }}</span>
+                                                            <span class="font-bold text-primary">{{ formula.price }} €</span>
+                                                        </div>
+                                                        {% if formula.description %}
+                                                            <p class="text-gray-500 text-xs mt-1">{{ formula.description }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </label>
+                                            {% endfor %}
+                                        </div>
+                                        <p id="no-formula-msg" class="hidden text-sm text-error mt-2">Aucune formule disponible pour cette durée.</p>
+                                        
+                                        {# Résumé du prix #}
+                                        <div id="price-summary" class="hidden mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                            <div class="flex justify-between items-center text-sm text-gray-600 mb-1">
+                                                <span id="price-calculation-detail"></span>
+                                            </div>
+                                            <div class="flex justify-between items-center font-bold text-lg text-primary-dark border-t border-gray-200 pt-2 mt-2">
+                                                <span>Total</span>
+                                                <span id="price-total"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="button" class="btn-primary w-full sm:ml-3 sm:w-auto">Confirmer</button>
+                        <button type="button" id="btn-close-modal" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Récupération des dates depuis le localStorage
+            const startDate = localStorage.getItem('startDate');
+            const endDate = localStorage.getItem('endDate');
+
+            if (startDate && endDate) {
+                // Formatage des dates en français (dd/mm/yyyy)
+                const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                const startFormatted = new Date(startDate).toLocaleDateString('fr-FR', options);
+                const endFormatted = new Date(endDate).toLocaleDateString('fr-FR', options);
+
+                // Injection du texte
+                const textElement = document.getElementById('booking-dates-text');
+                textElement.textContent = `Du ${startFormatted} au ${endFormatted}`;
+
+                // Affichage du conteneur
+                document.getElementById('booking-dates-container').classList.remove('hidden');
+            }
+
+            // Gestion de la modale
+            const modal = document.getElementById('reservation-modal');
+            const btnReserve = document.getElementById('btn-reserve');
+            const btnClose = document.getElementById('btn-close-modal');
+            const modalDates = document.getElementById('modal-dates');
+            const formulaItems = document.querySelectorAll('.formula-item');
+            const noFormulaMsg = document.getElementById('no-formula-msg');
+            const priceSummary = document.getElementById('price-summary');
+            const priceDetail = document.getElementById('price-calculation-detail');
+            const priceTotal = document.getElementById('price-total');
+
+            btnReserve.addEventListener('click', () => {
+                if (startDate && endDate) {
+                    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                    const startFormatted = new Date(startDate).toLocaleDateString('fr-FR', options);
+                    const endFormatted = new Date(endDate).toLocaleDateString('fr-FR', options);
+                    modalDates.textContent = `Du ${startFormatted} au ${endFormatted}`;
+                    modalDates.classList.remove('text-error');
+
+                    // Logique d'affichage des formules
+                    const start = new Date(startDate);
+                    const end = new Date(endDate);
+                    // On compare les dates sans l'heure pour savoir si c'est le même jour
+                    const isSameDay = start.toDateString() === end.toDateString();
+                    // Calcul de la durée en jours
+                    const diffTime = Math.abs(end - start);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    // Durée inclusive (si même jour = 1 jour, sinon diff + 1)
+                    // Ex: du 1er au 2 = 2 jours
+                    const duration = isSameDay ? 1 : diffDays + 1;
+
+                    const weeks = Math.floor(duration / 7);
+                    const restDays = duration % 7;
+                    const isMixedMode = (!isSameDay && duration > 7 && restDays !== 0);
+                    let mixedPrice3 = 0;
+                    let mixedPrice4 = 0;
+                    let visibleInputs = [];
+
+                    // On parcourt les options pour afficher/masquer selon la règle
+                    formulaItems.forEach(item => {
+                        const formulaId = parseInt(item.dataset.formulaId);
+                        const input = item.querySelector('input');
+
+                        // Reset de l'affichage
+                        item.classList.add('hidden');
+                        item.classList.remove('border-primary', 'bg-primary-lighter'); // Reset style sélection
+                        if(input) {
+                            input.disabled = true;
+                            input.checked = false; // Reset selection
+                            input.type = 'radio'; // Reset type to radio
+                            input.onclick = null; // Reset click handler
+                            input.name = 'rental-formula'; // Reset name
+                        }
+
+                        if (isMixedMode) {
+                            // Mode mixte : > 7 jours et pas multiple de 7
+                            // On affiche Formule 3 et 4 "cochées" (visuellement)
+                            if (formulaId === 3) {
+                                item.classList.remove('hidden');
+                                item.classList.add('border-primary', 'bg-primary-lighter');
+                                mixedPrice3 = parseFloat(item.dataset.price);
+                                if (input) {
+                                    input.type = 'radio'; // Keep radio style
+                                    input.name = 'rental-formula-' + formulaId; // Allow multiple selection
+                                    input.checked = true;
+                                    input.disabled = false; // Enable for styling
+                                    input.onclick = (e) => e.preventDefault(); // Prevent user interaction
+                                }
+                            }
+                            if (formulaId === 4) {
+                                item.classList.remove('hidden');
+                                item.classList.add('border-primary', 'bg-primary-lighter');
+                                mixedPrice4 = parseFloat(item.dataset.price);
+                                if (input) {
+                                    input.type = 'radio'; // Keep radio style
+                                    input.name = 'rental-formula-' + formulaId; // Allow multiple selection
+                                    input.checked = true;
+                                    input.disabled = false; // Enable for styling
+                                    input.onclick = (e) => e.preventDefault(); // Prevent user interaction
+                                }
+                            }
+                            // On laisse les inputs désactivés car c'est une formule imposée
+                        } else {
+                            if (isSameDay) {
+                                // Si 1 jour : Formules 1, 2, 3
+                                if ([1, 2, 3].includes(formulaId)) { 
+                                    item.classList.remove('hidden');
+                                    if(input) {
+                                        input.disabled = false;
+                                        visibleInputs.push(input);
+                                    }
+                                }
+                            } else {
+                                // Si > 1 jour
+                                
+                                // Cas spécifique : Multiple de 7 jours (7, 14, 21...) -> Uniquement Formule 4
+                                if (duration % 7 === 0) {
+                                    if (formulaId === 4) {
+                                        item.classList.remove('hidden');
+                                        if(input) {
+                                            input.disabled = false;
+                                            visibleInputs.push(input);
+                                        }
+                                    }
+                                } else {
+                                    // Sinon (ex: 2, 3, 4, 5, 6 jours) -> Formule 3 uniquement (car < 7 jours)
+                                    // Note: Le cas > 7 jours est géré par isMixedMode
+                                    if (formulaId === 3) {
+                                        item.classList.remove('hidden');
+                                        if(input) {
+                                            input.disabled = false;
+                                            visibleInputs.push(input);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Reset du résumé de prix à l'ouverture
+                    priceSummary.classList.add('hidden');
+
+                    if (isMixedMode) {
+                        const total = (weeks * mixedPrice4) + (restDays * mixedPrice3);
+                        priceDetail.textContent = `${weeks} semaine(s) x ${mixedPrice4} € + ${restDays} jour(s) x ${mixedPrice3} €`;
+                        priceTotal.textContent = `${total.toFixed(2)} €`;
+                        priceSummary.classList.remove('hidden');
+                        noFormulaMsg.classList.add('hidden');
+                    } else {
+                        if (visibleInputs.length === 0) {
+                            noFormulaMsg.classList.remove('hidden');
+                        } else {
+                            noFormulaMsg.classList.add('hidden');
+
+                            // Sélection automatique s'il n'y a qu'une seule option
+                            if (visibleInputs.length === 1) {
+                                visibleInputs[0].checked = true;
+                                // On déclenche l'événement change manuellement pour mettre à jour le prix et le style
+                                visibleInputs[0].dispatchEvent(new Event('change'));
+                            }
+                        }
+                    }
+
+                } else {
+                    modalDates.textContent = "Veuillez sélectionner des dates sur la page précédente.";
+                    modalDates.classList.add('text-error');
+                }
+                modal.classList.remove('hidden');
+            });
+
+            btnClose.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+
+            // Gestion du changement de formule pour le calcul du prix
+            formulaItems.forEach(item => {
+                const input = item.querySelector('input[type="radio"]');
+                if(!input) return;
+
+                input.addEventListener('change', () => {
+                    // Gestion du style visuel (bordure bleue)
+                    formulaItems.forEach(el => el.classList.remove('border-primary', 'bg-primary-lighter'));
+                    if(input.checked) {
+                        item.classList.add('border-primary', 'bg-primary-lighter');
+                    }
+
+                    // Calcul du prix
+                    const price = parseFloat(item.dataset.price);
+                    const formulaId = parseInt(item.dataset.formulaId);
+                    
+                    // Récupération de la durée (recalcul nécessaire ou stockage dans une variable accessible)
+                    const startDateVal = localStorage.getItem('startDate');
+                    const endDateVal = localStorage.getItem('endDate');
+                    
+                    if (startDateVal && endDateVal && !isNaN(price)) {
+                        const start = new Date(startDateVal);
+                        const end = new Date(endDateVal);
+                        const isSameDay = start.toDateString() === end.toDateString();
+                        const diffTime = Math.abs(end - start);
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        const duration = isSameDay ? 1 : diffDays + 1;
+
+                        let total = 0;
+
+                        if (formulaId === 4) {
+                            const weeks = duration / 7;
+                            total = weeks * price;
+                            priceDetail.textContent = `${Number.isInteger(weeks) ? weeks : weeks.toFixed(2)} semaine(s) x ${price} €`;
+                        } else {
+                            total = price * duration;
+                            priceDetail.textContent = `${duration} jour(s) x ${price} €`;
+                        }
+
+                        // Mise à jour de l'affichage
+                        priceTotal.textContent = `${total.toFixed(2)} €`;
+                        priceSummary.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

@@ -7,6 +7,7 @@ use App\Entity\Boat;
 use App\Repository\BoatRepository;
 use App\Repository\ModelRepository;
 use App\Repository\AdressRepository;
+use App\Repository\FormulaRepository;
 use App\Repository\TypeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,10 +19,10 @@ final class BoatController extends AbstractController
 {
     #[Route(name: 'app_boat_index', methods: ['GET'])]
     public function index(
-        BoatRepository $boatRepository, 
-        TypeRepository $typeRepository, 
-        ModelRepository $modelRepository, 
-        AdressRepository $adressRepository, 
+        BoatRepository $boatRepository,
+        TypeRepository $typeRepository,
+        ModelRepository $modelRepository,
+        AdressRepository $adressRepository,
         Request $request
     ): Response {
         // 1. Extraction des paramètres
@@ -32,26 +33,26 @@ final class BoatController extends AbstractController
         $cityFilter = ($city === '0' || $city === '') ? null : $city;
 
         /// 2. Logique pour filtrer la liste des MODÈLES
-    if ($typeId > 0) {
-        // On cherche les modèles qui sont liés à au moins un bateau de ce type
-        $modelsForSelect = $modelRepository->createQueryBuilder('m')
-            ->innerJoin('App\Entity\Boat', 'b', 'WITH', 'b.model = m')
-            ->where('b.type = :typeId')
-            ->setParameter('typeId', $typeId)
-            ->distinct()
-            ->orderBy('m.label', 'ASC')
-            ->getQuery()
-            ->getResult();
-        
-        // Sécurité : reset du model si incohérent (optionnel mais conseillé)
-        // On vérifie si le modelId actuel est dans la liste des modèles possibles pour ce type
-        $modelIds = array_map(fn($m) => $m->getId(), $modelsForSelect);
-        if ($modelId > 0 && !in_array($modelId, $modelIds)) {
-            $modelId = 0;
+        if ($typeId > 0) {
+            // On cherche les modèles qui sont liés à au moins un bateau de ce type
+            $modelsForSelect = $modelRepository->createQueryBuilder('m')
+                ->innerJoin('App\Entity\Boat', 'b', 'WITH', 'b.model = m')
+                ->where('b.type = :typeId')
+                ->setParameter('typeId', $typeId)
+                ->distinct()
+                ->orderBy('m.label', 'ASC')
+                ->getQuery()
+                ->getResult();
+
+            // Sécurité : reset du model si incohérent (optionnel mais conseillé)
+            // On vérifie si le modelId actuel est dans la liste des modèles possibles pour ce type
+            $modelIds = array_map(fn($m) => $m->getId(), $modelsForSelect);
+            if ($modelId > 0 && !in_array($modelId, $modelIds)) {
+                $modelId = 0;
+            }
+        } else {
+            $modelsForSelect = $modelRepository->findBy([], ['label' => 'ASC']);
         }
-    } else {
-        $modelsForSelect = $modelRepository->findBy([], ['label' => 'ASC']);
-    }
 
         // 3. Récupération des bateaux filtrés
         $boats = $boatRepository->findAllWithFilters($typeId, $modelId, $cityFilter);
@@ -70,9 +71,11 @@ final class BoatController extends AbstractController
         if ($startStr && $endStr) {
             $start = new \DateTime($startStr);
             $end = new \DateTime($endStr);
-            $boats = $boatRepository->findAvailableBoats($start, $end);
-        } else {
-            $boats = $boatRepository->findAll(); // Par défaut ou si aucune date n'est choisie
+            $availableBoats = $boatRepository->findAvailableBoats($start, $end);
+
+            // On croise les résultats : on ne garde que les bateaux filtrés qui sont aussi disponibles
+            $availableIds = array_map(fn($b) => $b->getId(), $availableBoats);
+            $boats = array_filter($boats, fn($b) => in_array($b->getId(), $availableIds));
         }
 
         return $this->render('boat/index.html.twig', [
@@ -85,9 +88,9 @@ final class BoatController extends AbstractController
             'currentCity' => $city ?? '0'
         ]);
     }
-    
+
     #[Route('/{id}', name: 'app_boat_show', methods: ['GET'])]
-    public function show(int $id, BoatRepository $boatRepository, AdressRepository $adressRepository): Response
+    public function show(int $id, BoatRepository $boatRepository, AdressRepository $adressRepository, FormulaRepository $formulaRepository): Response
     {
         // ========== RÉCUPÉRATION DU boat ==========
 
@@ -103,20 +106,20 @@ final class BoatController extends AbstractController
         }
 
         //Verifier que l'adresss existe
-        if(!$adress){
+        if (!$adress) {
             $this->addFlash('error', "Ce défi n'existe pas");
             return $this->redirectToRoute('app_boat_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        // Récupération des formules
+        $formulas = $formulaRepository->findAll();
 
         // ========== RENDU ==========
 
         return $this->render('boat/show.html.twig', [
             'boat' => $boat,
-            'adress' => $adress
+            'adress' => $adress,
+            'formulas' => $formulas
         ]);
     }
-
-
-    
 }

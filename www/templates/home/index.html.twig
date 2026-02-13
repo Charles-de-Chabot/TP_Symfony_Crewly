@@ -3,135 +3,105 @@
 {% block title %}Accueil - Crewly{% endblock %}
 
 {% block body %}
-
-    <!-- section hero -->
-    <section class="gradient-hero section">
-        <div class="container-main">
-            <div class="text-center">
-                <h1 class="text-5xl md:text-6xl text-gray-900 mb-6">Bienvenue sur Crewly!</h1>
-                <p class="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    {% if not app.user %}
-                        <a class="btn-primary-xl inline-flex items-center justify-center space-x-2" href="{{ path('app_register') }}">
-                            <svg class="icon-with-text" xmlns="http://www.w3.org/2000/svg" width="0.88em" height="1em" viewBox="0 0 21 24"><path fill="currentColor" d="M10.834 14.35a.416.416 0 0 0 .492.32h-.003l6.658-1.448a.4.4 0 0 0 .261-.185l.001-.002a.42.42 0 0 0 .054-.323l.001.003c-1.813-6.169-5.466-10.8-10.029-12.72H8.23a.415.415 0 0 0-.405.506L7.824.498zm-6.439 1.82l5.259-1.138a.42.42 0 0 0 .261-.178l.001-.002a.38.38 0 0 0 .054-.312l.001.003L8.296 6.83a.4.4 0 0 0-.335-.32h-.002a.2.2 0 0 0-.055-.007h-.015h.001a.41.41 0 0 0-.357.204l-.001.002l-.117.2c-1.558 2.646-2.909 4.935-3.52 8.795a.42.42 0 0 0 .123.365a.46.46 0 0 0 .38.098h-.003zm-.509 4.212a.35.35 0 0 0 .228-.09l.24-.24a2.425 2.425 0 0 1 3.418 0l.24.24a.3.3 0 0 0 .217.09h.01a.35.35 0 0 0 .228-.09l.255-.255a2.42 2.42 0 0 1 1.699-.696c.666 0 1.268.269 1.706.703l.234.234a.34.34 0 0 0 .227.097h.001a.35.35 0 0 0 .228-.09l.234-.234a2.425 2.425 0 0 1 3.418 0l.24.24c.056.055.132.09.217.09h.011h-.001a.35.35 0 0 0 .228-.09l.24-.24a2.4 2.4 0 0 1 .811-.532l.016-.006c.021-.042.048-.075.069-.117l2.488-5.073a.47.47 0 0 0-.049-.481l.001.001a.46.46 0 0 0-.459-.165l.003-.001l-17.666 3.832a.56.56 0 0 0-.399.755l-.001-.004l.565 1.434c.346.145.641.346.889.593a.24.24 0 0 0 .191.095l.025-.001h-.001zm16.535 2.109c-.34-.337-.807-.544-1.323-.544s-.984.208-1.323.545l-.24.24a.863.863 0 0 1-1.213 0l-.24-.24c-.34-.337-.807-.544-1.323-.544s-.984.208-1.323.545l-.234.234a.86.86 0 0 1-.605.248h-.006a.84.84 0 0 1-.602-.255l-.235-.235a1.88 1.88 0 0 0-1.327-.545c-.514 0-.979.205-1.32.538l-.255.255a.863.863 0 0 1-1.213 0l-.24-.24c-.34-.337-.807-.545-1.324-.545s-.984.208-1.324.545l-.24.24a.863.863 0 0 1-1.213 0c-.402-.396-.955-.641-1.565-.641s-1.162.245-1.565.641a.505.505 0 0 0 0 .72a.5.5 0 0 0 .358.151H.53a.5.5 0 0 0 .354-.145a1.196 1.196 0 0 1 1.696 0c.34.336.807.544 1.323.544s.984-.208 1.323-.544l.24-.24a.863.863 0 0 1 1.213 0l.24.24c.336.336.8.544 1.313.544h.011h-.001h.003c.512 0 .976-.205 1.314-.538l.262-.255a.863.863 0 0 1 1.213 0l.234.234c.338.34.806.55 1.323.551h.011c.513 0 .977-.208 1.312-.544l.234-.234a.863.863 0 0 1 1.213 0l.24.24c.34.336.807.544 1.323.544s.984-.208 1.323-.544l.24-.24a.863.863 0 0 1 1.213 0c.091.09.216.145.355.145h.011a.5.5 0 0 0 .352-.151a.5.5 0 0 0 .001-.719z"/><path fill="currentColor" d="M1.708 21.043h.004c.33 0 .628.134.844.351c.34.337.807.544 1.323.544s.984-.208 1.323-.545l.24-.24a.863.863 0 0 1 1.213 0l.24.24c.336.337.8.545 1.314.545h.01h-.001h.003c.512 0 .976-.205 1.314-.538l.262-.255a.863.863 0 0 1 1.22.007l.234.234c.338.339.806.55 1.323.551h.01c.513 0 .977-.208 1.313-.545l.234-.234a.863.863 0 0 1 1.213 0l.24.24c.34.337.807.544 1.323.544s.984-.208 1.323-.545l.24-.24a.863.863 0 0 1 1.213 0c.091.09.216.145.354.145h.011a.5.5 0 0 0 .352-.151a.505.505 0 0 0 0-.72c-.34-.337-.807-.544-1.323-.544s-.984.208-1.323.545l-.24.24a.863.863 0 0 1-1.213 0l-.24-.24c-.34-.337-.807-.544-1.323-.544s-.984.208-1.323.545l-.234.234a.86.86 0 0 1-.605.248h-.006a.84.84 0 0 1-.602-.255l-.235-.235a1.88 1.88 0 0 0-1.326-.544c-.514 0-.98.205-1.32.538l-.255.255a.863.863 0 0 1-1.213 0l-.24-.24c-.34-.337-.807-.545-1.324-.545s-.984.208-1.324.545l-.24.24a.863.863 0 0 1-1.213 0c-.402-.396-.955-.641-1.565-.641s-1.162.245-1.565.641a.5.5 0 0 0 0 .72a.5.5 0 0 0 .358.152H.51a.5.5 0 0 0 .354-.145c.211-.221.507-.359.837-.359h.005z"/></svg>
-                            <span>Inscrivez-vous</span>
-                        </a>
-                        <a class="btn-secondary-lg inline-flex items-center justify-center space-x-2" href="#fonctionnalies">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M16 1.466C7.973 1.466 1.466 7.973 1.466 16S7.973 30.534 16 30.534S30.534 24.027 30.534 16S24.027 1.466 16 1.466M14.757 8h2.42v2.574h-2.42zm4.005 15.622H16.1c-1.034 0-1.475-.44-1.475-1.496V15.26c0-.33-.176-.483-.484-.483h-.88V12.4h2.663c1.035 0 1.474.462 1.474 1.496v6.887c0 .31.176.484.484.484h.88z"/></svg>
-                            <span>En savoir plus</span>
-                        </a>
-                    {% else %}
-                        <a class="btn-primary-xl inline-flex items-center justify-center space-x-2" href="{{ path('app_boat_index') }}">
-                            <svg class="icon-with-text" xmlns="http://www.w3.org/2000/svg" width="0.88em" height="1em" viewBox="0 0 21 24"><path fill="currentColor" d="M10.834 14.35a.416.416 0 0 0 .492.32h-.003l6.658-1.448a.4.4 0 0 0 .261-.185l.001-.002a.42.42 0 0 0 .054-.323l.001.003c-1.813-6.169-5.466-10.8-10.029-12.72H8.23a.415.415 0 0 0-.405.506L7.824.498zm-6.439 1.82l5.259-1.138a.42.42 0 0 0 .261-.178l.001-.002a.38.38 0 0 0 .054-.312l.001.003L8.296 6.83a.4.4 0 0 0-.335-.32h-.002a.2.2 0 0 0-.055-.007h-.015h.001a.41.41 0 0 0-.357.204l-.001.002l-.117.2c-1.558 2.646-2.909 4.935-3.52 8.795a.42.42 0 0 0 .123.365a.46.46 0 0 0 .38.098h-.003zm-.509 4.212a.35.35 0 0 0 .228-.09l.24-.24a2.425 2.425 0 0 1 3.418 0l.24.24a.3.3 0 0 0 .217.09h.01a.35.35 0 0 0 .228-.09l.255-.255a2.42 2.42 0 0 1 1.699-.696c.666 0 1.268.269 1.706.703l.234.234a.34.34 0 0 0 .227.097h.001a.35.35 0 0 0 .228-.09l.234-.234a2.425 2.425 0 0 1 3.418 0l.24.24c.056.055.132.09.217.09h.011h-.001a.35.35 0 0 0 .228-.09l.24-.24a2.4 2.4 0 0 1 .811-.532l.016-.006c.021-.042.048-.075.069-.117l2.488-5.073a.47.47 0 0 0-.049-.481l.001.001a.46.46 0 0 0-.459-.165l.003-.001l-17.666 3.832a.56.56 0 0 0-.399.755l-.001-.004l.565 1.434c.346.145.641.346.889.593a.24.24 0 0 0 .191.095l.025-.001h-.001zm16.535 2.109c-.34-.337-.807-.544-1.323-.544s-.984.208-1.323.545l-.24.24a.863.863 0 0 1-1.213 0l-.24-.24c-.34-.337-.807-.544-1.323-.544s-.984.208-1.323.545l-.234.234a.86.86 0 0 1-.605.248h-.006a.84.84 0 0 1-.602-.255l-.235-.235a1.88 1.88 0 0 0-1.327-.545c-.514 0-.979.205-1.32.538l-.255.255a.863.863 0 0 1-1.213 0l-.24-.24c-.34-.337-.807-.545-1.324-.545s-.984.208-1.324.545l-.24.24a.863.863 0 0 1-1.213 0c-.402-.396-.955-.641-1.565-.641s-1.162.245-1.565.641a.505.505 0 0 0 0 .72a.5.5 0 0 0 .358.151H.53a.5.5 0 0 0 .354-.145a1.196 1.196 0 0 1 1.696 0c.34.336.807.544 1.323.544s.984-.208 1.323-.544l.24-.24a.863.863 0 0 1 1.213 0l.24.24c.336.336.8.544 1.313.544h.011h-.001h.003c.512 0 .976-.205 1.314-.538l.262-.255a.863.863 0 0 1 1.213 0l.234.234c.338.34.806.55 1.323.551h.011c.513 0 .977-.208 1.312-.544l.234-.234a.863.863 0 0 1 1.213 0l.24.24c.34.336.807.544 1.323.544s.984-.208 1.323-.544l.24-.24a.863.863 0 0 1 1.213 0c.091.09.216.145.355.145h.011a.5.5 0 0 0 .352-.151a.5.5 0 0 0 .001-.719z"/><path fill="currentColor" d="M1.708 21.043h.004c.33 0 .628.134.844.351c.34.337.807.544 1.323.544s.984-.208 1.323-.545l.24-.24a.863.863 0 0 1 1.213 0l.24.24c.336.337.8.545 1.314.545h.01h-.001h.003c.512 0 .976-.205 1.314-.538l.262-.255a.863.863 0 0 1 1.22.007l.234.234c.338.339.806.55 1.323.551h.01c.513 0 .977-.208 1.313-.545l.234-.234a.863.863 0 0 1 1.213 0l.24.24c.34.337.807.544 1.323.544s.984-.208 1.323-.545l.24-.24a.863.863 0 0 1 1.213 0c.091.09.216.145.354.145h.011a.5.5 0 0 0 .352-.151a.505.505 0 0 0 0-.72c-.34-.337-.807-.544-1.323-.544s-.984.208-1.323.545l-.24.24a.863.863 0 0 1-1.213 0l-.24-.24c-.34-.337-.807-.544-1.323-.544s-.984.208-1.323.545l-.234.234a.86.86 0 0 1-.605.248h-.006a.84.84 0 0 1-.602-.255l-.235-.235a1.88 1.88 0 0 0-1.326-.544c-.514 0-.98.205-1.32.538l-.255.255a.863.863 0 0 1-1.213 0l-.24-.24c-.34-.337-.807-.545-1.324-.545s-.984.208-1.324.545l-.24.24a.863.863 0 0 1-1.213 0c-.402-.396-.955-.641-1.565-.641s-1.162.245-1.565.641a.5.5 0 0 0 0 .72a.5.5 0 0 0 .358.152H.51a.5.5 0 0 0 .354-.145c.211-.221.507-.359.837-.359h.005z"/></svg>
-                            <span>Commencer l'avanture!</span>
-                        </a>
-                    {% endif %}
-                </div>
+    {# Hero Section #}
+    <div class="relative bg-primary-dark overflow-hidden">
+        <div class="absolute inset-0">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary-dark to-primary opacity-90"></div>
+        </div>
+        <div class="relative container-main px-4 py-24 sm:px-6 lg:px-8 lg:py-32 flex flex-col items-center text-center">
+            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl mb-6">
+                L'aventure commence ici
+            </h1>
+            <p class="mt-2 max-w-2xl text-xl text-primary-light mb-10">
+                Louez le bateau de vos rêves et partez à la découverte des plus beaux horizons. Simple, rapide et sécurisé.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <a href="{{ path('app_boat_index') }}" class="btn-secondary-transparent text-lg px-8 py-4">
+                    Voir la flotte
+                </a>
+                <a href="{{ path('app_boat_index') }}" class="btn-secondary bg-white text-primary border-white hover:bg-gray-100 text-lg px-8 py-4">
+                    Réserver maintenant
+                </a>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Fonctionnalités -->
-    <section class="section bg-white" id="fonctionnalites">
+    {# Features Section #}
+    <div class="py-24 bg-white">
         <div class="container-main">
             <div class="text-center mb-16">
-                <h2 class="text-4xl text-gray-900 mb-4">Larguez les amarres!</h2>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                    Nous nous occupons de l'horizon. 
-                </p>
+                <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">Pourquoi choisir Crewly ?</h2>
+                <p class="mt-4 text-lg text-gray-600">Nous rendons la location de bateaux accessible à tous.</p>
             </div>
-            <!-- Affichage des cartes -->
-            <div class="grid md:grid-cols-3 gap-8 ">
-                <!-- Carte 1 Monocoque-->
-                <div class="gradient-card-primary rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
-                    <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-primary">
-                        <svg class="text-white w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m3 13.5l8-11.47V13.5zm9.5 0c1.35-3.75 1.17-8.79 0-12.5c4.76 1.54 8.4 7.4 8.46 12.5zm8.6 3.58c-.41.64-.89 1.19-1.45 1.66c-.65-.29-1.23-.74-1.69-1.24c-1.49 1.93-4.5 1.93-5.99 0c-1.47 1.93-4.5 1.93-5.97 0c-.5.5-1.05.95-1.7 1.24c-1.14-.94-2-2.28-2.3-3.74h19.94a6.4 6.4 0 0 1-.84 2.08M20.96 23q-1.59 0-3-.75c-1.84 1-4.15 1-5.99 0c-1.84 1-4.15 1-5.97 0c-1.23.69-2.64.8-4 .75v-2c1.41.05 2.77-.1 4-1c1.74 1.25 4.21 1.25 5.97 0c1.77 1.25 4.23 1.25 5.99 0c1.21.9 2.58 1.05 3.98 1v2z"/></svg>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="text-center">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-primary-light text-primary mb-6 mx-auto">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
-                        <h3 class="text-2xl text-gray-900 mb-4">L'Art de la Navigation Pure</h3>
-                        <p class="text-gray-700 leading-relaxed">
-                            Redécouvrez le plaisir originel de la mer. Louer un monocoque, c'est choisir l'élégance du geste et la sensation unique d'un voilier qui gîte sous la brise.
-                        </p>
-                        <div class="mt-auto text-right">
-                            <a href="#" class="inline-flex items-center space-x-2 font-bold text-primary hover:underline hover:text-primary-dark">
-                                <span>Voir</span>
-                            </a>
-                        </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Réservation Facile</h3>
+                    <p class="text-gray-600">Quelques clics suffisent pour bloquer vos dates et partir naviguer.</p>
                 </div>
-                <!-- Carte 2 Catamaran-->
-                <div class="gradient-card-accent rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
-                    <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-accent">
-                        <svg class="text-white w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><path fill="currentColor" d="M3.98 36h12.04a.98.98 0 0 0 .98-.98V17a.98.98 0 0 0-1.8-.54L3.17 34.48A.98.98 0 0 0 3.98 36M20 36h23.99A1 1 0 0 0 45 34.98C44.58 16.6 32.84.76 20.03 0A.99.99 0 0 0 19 1v34a1 1 0 0 0 1 1m26 3H2a2 2 0 0 0-2 2a7 7 0 0 0 7 7h34a7 7 0 0 0 7-7a2 2 0 0 0-2-2"/></svg>
-                        
+                <div class="text-center">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-primary-light text-primary mb-6 mx-auto">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
-                        <h3 class="text-2xl text-gray-900 mb-4">Votre Villa sur l'Eau</h3>
-                        <p class="text-gray-700 leading-relaxed">
-                            Le luxe de l'espace sans aucun compromis sur la stabilité. Idéal pour des vacances entre amis ou en famille, le catamaran offre des volumes de vie exceptionnels et des filets de bronzage suspendus au-dessus des vagues.
-                        <div class="mt-auto text-right">
-                            <a href="#" class="inline-flex items-center space-x-2 font-bold text-primary hover:underline hover:text-primary-dark">
-                                <span>Voir</span>
-                            </a>
-                        </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Flexibilité</h3>
+                    <p class="text-gray-600">Annulation gratuite jusqu'à 48h avant le départ sur la plupart des bateaux.</p>
                 </div>
-                <!-- Carte 3 MotorYatch-->
-                <div class="gradient-card-primary rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
-                    <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-primary">
-                        <svg class="text-white w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><path fill="currentColor" d="M416 473.14a6.83 6.83 0 0 0-3.57-6c-27.07-14.55-51.76-36.82-62.62-48a10.05 10.05 0 0 0-12.72-1.51c-50.33 32.42-111.61 32.44-161.95.05a10.09 10.09 0 0 0-12.82 1.56c-10.77 11.28-35.19 33.3-62.43 47.75a7.11 7.11 0 0 0-3.89 5.73a6.73 6.73 0 0 0 7.92 7.15c20.85-4.18 41-13.68 60.2-23.83a8.71 8.71 0 0 1 8-.06a185.14 185.14 0 0 0 167.81 0a8.82 8.82 0 0 1 8.09.06c19.1 10 39.22 19.59 60 23.8a6.73 6.73 0 0 0 8-6.71Zm60.71-226.23c-3.49-8.39-10.9-14.89-20.9-18.35L432 219.08V136a64 64 0 0 0-64-64h-32v-8a40 40 0 0 0-40-40h-80a40 40 0 0 0-40 40v8h-32a64 64 0 0 0-64 64v83.15l-23.58 9.39c-9.94 3.3-17.63 10-21.15 18.44c-2.45 5.89-5.25 15-1.3 26.46l.1.3l46.66 119.44A23.33 23.33 0 0 0 102.58 408c.5 0 1 0 1.53-.05c31.32-2 56-17.27 72.6-31.61C200.42 396.81 228.31 408 256 408s55.43-11.2 79.14-31.7c16.59 14.36 41.3 29.67 72.61 31.65a23.36 23.36 0 0 0 23.37-14.74l46.65-119c3.28-8.09 2.9-17.76-1.06-27.3M269 154.21l-1.14-.4a39.53 39.53 0 0 0-23.73 0l-.58.18l-126.07 50.23a4 4 0 0 1-5.48-3.72V136a32 32 0 0 1 32-32h224a32 32 0 0 1 32 32v64.44a4 4 0 0 1-5.48 3.72Z"/></svg>
+                <div class="text-center">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-primary-light text-primary mb-6 mx-auto">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                     </div>
-                        <h3 class="text-2xl text-gray-900 mb-4">Puissance et Prestige</h3>
-                        <p class="text-gray-700 leading-relaxed">
-                            Vivez une expérience exclusive où la vitesse rencontre le raffinement. Nos Motor Yachts vous permettent de relier les plus belles destinations en un temps record, tout en profitant d'équipements haut de gamme et de flybridges spacieux.
-                        <div class="mt-auto text-right">
-                            <a href="#" class="inline-flex items-center space-x-2 font-bold text-primary hover:underline hover:text-primary-dark">
-                                <span>Voir</span>
-                            </a>
-                        </div>
-                </div>
-                <!-- Carte 4 Pêche-->
-                <div class="gradient-card-primary rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
-                    <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-primary">
-                        <svg class="text-white w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><path fill="currentColor" d="m232.54 67.154l-17.08 5.692L241.513 151h18.976zM71.28 106.707l-14.56 10.586L71 136.928V230h18v-68.322L161.234 261h22.258zM272 117v18h39v16h18v-16h39v-18zm-23 52v126h108.943l-5.111-46H279v-80zm48 0v62h53.834l-6.889-62zM89 279v16h110v-16zm-70.012 34l41.248 110h319.68l114.25-110H140.588C157.022 318.35 169 333.85 169 352c0 22.537-18.463 41-41 41s-41-18.463-41-41c0-18.15 11.978-33.65 28.412-39zM128 329c-12.81 0-23 10.19-23 23s10.19 23 23 23s23-10.19 23-23s-10.19-23-23-23m208 0h80v18h-80zM96 439c-28.777 2.338-51.11 8.201-78.61 16.387l5.22 17.226C45.822 467.213 71.59 457.287 96 457c23.665 0 49.275 16 80 16s56.335-16 80-16s49.275 16 80 16s56.335-16 80-16c27.734 2.18 46.87 7.726 73.39 15.613l5.22-17.226C468.536 448.762 443.471 439.273 416 439c-30.725 0-56.335 16-80 16s-49.275-16-80-16s-56.335 16-80 16s-49.275-16-80-16"/></svg>
-                    </div>
-                        <h3 class="text-2xl text-gray-900 mb-4">L'Aventure à portée de Main</h3>
-                        <p class="text-gray-700 leading-relaxed">
-                            Pour les passionnés qui ne laissent rien au hasard. Nos bateaux de pêche sont de véritables unités tactiques, équipées des meilleures technologies pour traquer les plus belles prises.
-                        <div class="mt-auto text-right">
-                            <a href="#" class="inline-flex items-center space-x-2 font-bold text-primary hover:underline hover:text-primary-dark">
-                                <span>Voir</span>
-                            </a>
-                        </div>
-                </div>
-                <!-- Carte 5 Jetski-->
-                <div class="gradient-card-primary rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
-                    <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-primary">
-                        <svg class="text-white w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 15 15"><path fill="currentColor" d="M10.064 11.216c.47-.513.936-1.022 1.594-1.242a2 2 0 0 1 1.867.28c.724.532 1.39-.22.591-.806a3.02 3.02 0 0 0-2.774-.423c-.72.24-1.213.767-1.705 1.294c-.4.427-.8.855-1.322 1.129c-.62.324-1.065-.027-1.065-.636V10.8c0-.798-.408-1.3-1.25-1.3c-.49 0-.992.258-1.5.5a16.2 16.2 0 0 0-3.317 2.113a.505.505 0 0 0-.067.707c.25.3.58.162.83-.038c.413-.333 1.78-1.391 2.933-1.94c.477-.227.862-.342 1.121-.342c.25 0 .25.102.25.34c-.002 1.326 1.29 2.142 2.529 1.494c.504-.265.896-.692 1.285-1.118M2.5 9c1.5-1 3.255-2 5-2c.75 0 .75.375.75.75s0 .75.75.75c2.527 0 5.363-3.214 5.5-5.5L12 4l-2.342-.974c-.612-.204-.928.744-.316.948L10.5 4.5L9 5L5 3.75c-.236-.079-.389.027-.5.25L3 7L1 8zM5 2a1 1 0 1 1 2 0a1 1 0 0 1-2 0"/></svg>
-                    </div>
-                        <h3 class="text-2xl text-gray-900 mb-4">L'Adrénaline Pure</h3>
-                        <p class="text-gray-700 leading-relaxed">
-                            Faites le plein de sensations fortes et domptez les vagues. Louer un jetski, c'est s'offrir une dose d'adrénaline instantanée et une liberté de mouvement totale. 
-                        <div class="mt-auto text-right">
-                            <a href="#" class="inline-flex items-center space-x-2 font-bold text-primary hover:underline hover:text-primary-dark">
-                                <span>Voir</span>
-                            </a>
-                        </div>
-                </div>
-                <!-- Carte 6 kayak-->
-                <div class="gradient-card-primary rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
-                    <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-primary">
-                        <svg class="text-white w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.414 6.414a2 2 0 0 0 0-2.828L5 2.172L2.172 5l1.414 1.414a2 2 0 0 0 2.828 0m11.172 11.172a2 2 0 0 0 0 2.828L19 21.828L21.828 19l-1.414-1.414a2 2 0 0 0-2.828 0M6.5 6.5l11 11m4.5-15C12.017 5.101 4.373 10.452 2 22c9.983-2.601 17.627-7.952 20-19.5m-15.5 10l5 5m1-11l5 5"/></svg>
-                    </div>
-                        <h3 class="text-2xl text-gray-900 mb-4">L'Exploration au Naturel</h3>
-                        <p class="text-gray-700 leading-relaxed">
-                            Glissez en toute discrétion au cœur de la nature sauvage. Le kayak est le compagnon idéal pour ceux qui cherchent la sérénité et l'accès aux criques les plus secrètes.
-                        <div class="mt-auto text-right">
-                            <a href="#" class="inline-flex items-center space-x-2 font-bold text-primary hover:underline hover:text-primary-dark">
-                                <span>Voir</span>
-                            </a>
-                        </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Paiement Sécurisé</h3>
+                    <p class="text-gray-600">Transactions cryptées et garanties pour votre tranquillité d'esprit.</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
+    {# Featured Boats #}
+    <div class="py-24 bg-gray-50">
+        <div class="container-main">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900">Nos derniers ajouts</h2>
+                    <p class="mt-2 text-gray-600">Embarquez sur nos nouveautés.</p>
+                </div>
+                <a href="{{ path('app_boat_index') }}" class="text-primary font-semibold hover:text-primary-dark flex items-center">
+                    Tout voir <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {% for boat in featuredBoats %}
+                    <div class="card-hover overflow-hidden flex flex-col h-full border border-gray-100">
+                        <a href="{{ path('app_boat_show', {id: boat.id}) }}" class="block relative group h-48 overflow-hidden">
+                            {% if boat.media|length > 0 %}
+                                <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="{{ asset('uploads/boats/' ~ boat.media.first.imgPath) }}" alt="{{ boat.name }}">
+                            {% else %}
+                                <div class="w-full h-full gradient-placeholder flex items-center justify-center">
+                                    <span class="text-gray-400">Pas d'image</span>
+                                </div>
+                            {% endif %}
+                            <div class="absolute top-4 right-4">
+                                <span class="badge-category-sm bg-white/90 backdrop-blur-sm text-primary shadow-sm">
+                                    {{ boat.type.label }}
+                                </span>
+                            </div>
+                        </a>
+                        <div class="p-6 flex flex-col flex-1">
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">
+                                <a href="{{ path('app_boat_show', {id: boat.id}) }}" class="hover:text-primary transition-colors">{{ boat.name }}</a>
+                            </h3>
+                            <div class="mt-auto flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100">
+                                <span>{{ boat.maxUser }} pers.</span>
+                                <span class="font-semibold text-primary">Voir détails</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
