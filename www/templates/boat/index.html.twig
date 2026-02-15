@@ -1,0 +1,241 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}La Flotte - Crewly
+{% endblock %}
+
+{% block body %}
+    {# Hero Section #}
+    <div class="bg-primary-dark relative overflow-hidden pb-24 pt-16">
+        <div class="absolute inset-0 bg-gradient-to-br from-primary-dark to-primary opacity-90 z-0"></div>
+        {# Optionnel : Image de fond si disponible #}
+        {# <div class="absolute inset-0 z-0 opacity-20" style="background-image: url('...'); background-size: cover;"></div> #}
+        
+        <div class="container-main relative z-10 text-center md:text-left">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
+                Naviguez vers l'aventure
+            </h1>
+            <p class="text-lg text-primary-light max-w-2xl mx-auto md:mx-0">
+                Découvrez notre flotte de bateaux d'exception et réservez votre prochaine escapade en mer.
+            </p>
+        </div>
+    </div>
+
+    <div class="min-h-screen bg-gray-50 pb-12">
+        <div class="container-main -mt-16 relative z-20">
+            {% include "partials/_messages.html.twig" %}
+
+            {# Carte de Recherche et Filtres #}
+            <div class="bg-white rounded-xl shadow-xl p-6 md:p-8 mb-12 border border-gray-100">
+                
+                {% if not app.user %}
+                    {# Invitation à la connexion pour les visiteurs #}
+                    <div class="mb-8 pb-8 border-b border-gray-100">
+                        <div class="flex flex-col md:flex-row items-center justify-between bg-primary-lighter rounded-lg p-6 border border-primary-light">
+                            <div class="mb-4 md:mb-0">
+                                <h3 class="text-lg font-bold text-primary-dark">Prêt à naviguer ?</h3>
+                                <p class="text-primary text-sm">Connectez-vous pour vérifier les disponibilités et réserver.</p>
+                            </div>
+                            <a href="{{ path('app_login') }}" class="btn-primary">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                                Se connecter
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="flex flex-col lg:flex-row gap-8">
+                    {% if app.user %}
+                        {# Sélecteur de dates (Calendrier Flatpickr) #}
+                        <div class="w-full lg:w-auto flex-shrink-0 flex flex-col items-center justify-center border-b lg:border-b-0 lg:border-r border-gray-100 pb-8 lg:pb-0 lg:pr-8">
+                            <label class="block text-sm font-bold text-gray-700 mb-4">Dates de navigation</label>
+                            
+                            {# Styles spécifiques au calendrier #}
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+                            <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+
+                            <div id="inline-calendar" 
+                                data-start="{{ app.request.query.get('start') }}"
+                                data-end="{{ app.request.query.get('end') }}">
+                            </div>
+                            
+                            {% if app.request.query.get('start') %}
+                                <a href="{{ path('app_boat_index') }}" onclick="localStorage.removeItem('startDate'); localStorage.removeItem('endDate');" class="mt-3 text-sm text-error hover:text-red-700 font-medium">
+                                    Effacer la sélection
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {# Formulaire de filtres (Type, Modèle, Ville) #}
+                    <div class="flex-grow">
+                        <form class="grid grid-cols-1 md:grid-cols-2 {{ app.user ? 'lg:grid-cols-2' : 'lg:grid-cols-4' }} gap-6 h-full content-center" action="{{ path('app_boat_index') }}" method="get">
+                            {# Inputs cachés : Permettent de garder les dates sélectionnées quand on change un filtre #}
+                            {% if app.request.query.get('start') %}
+                                <input type="hidden" name="start" value="{{ app.request.query.get('start') }}">
+                                <input type="hidden" name="end" value="{{ app.request.query.get('end') }}">
+                            {% endif %}
+
+                    <div>
+                        <label for="type" class="form-label">Type de bateau</label>
+                        <select name="type" id="type" class="form-select" onchange="this.form.submit()">
+                            <option value="0" {{ currentType == 0 ? 'selected' : '' }}>Tous les types</option>
+                            {% for type in types %}
+                                <option value="{{ type.id }}" {{ currentType == type.id ? 'selected' : '' }}>{{ type.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="model" class="form-label">Modèle</label>
+                        <select name="model" id="model" class="form-select" onchange="this.form.submit()">
+                            <option value="0" {{ currentModel == 0 ? 'selected' : '' }}>Tous les modèles</option>
+                            {% for model in models %}
+                                <option value="{{ model.id }}" {{ currentModel == model.id ? 'selected' : '' }}>{{ model.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="city" class="form-label">Port d'attache</label>
+                        <select name="city" id="city" class="form-select" onchange="this.form.submit()">
+                            <option value="0" {{ currentCity == '0' ? 'selected' : '' }}>Toutes les villes</option>
+                            {% for city in cities %}
+                                <option value="{{ city }}" {{ currentCity == city ? 'selected' : '' }}>{{ city }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="flex items-end">
+                        {% if currentType != 0 or currentModel != 0 or currentCity != '0' %}
+                            <a href="{{ path('app_boat_index', {'start': app.request.query.get('start'), 'end': app.request.query.get('end')}) }}" class="btn-secondary w-full justify-center">
+                                Réinitialiser
+                            </a>
+                        {% else %}
+                            <div class="w-full h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-sm">
+                                Filtres inactifs
+                            </div>
+                        {% endif %}
+                    </div>
+                </form>
+                    </div>
+                </div>
+            </div>
+
+			{# Résultats de la recherche #}
+            <div class="mb-6 flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-gray-900">Résultats de recherche</h2>
+                <span class="badge-category">{{ boats|length }} bateau(x)</span>
+            </div>
+
+			{% if boats|length > 0 %}
+                {# Grille des bateaux #}
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					{% for boat in boats %}
+						<div class="card-hover overflow-hidden flex flex-col h-full border border-gray-100">
+							{# Image du bateau avec lien #}
+							<a class="block relative group" href="{{ path('app_boat_show', {id: boat.id}) }}">
+								{% if boat.media|length > 0 %}
+									<img class="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105" src="{{ asset('uploads/boats/' ~ boat.media.first.imgPath) }}" alt="{{ boat.name }}">
+								{% else %}
+									<div class="w-full h-56 gradient-placeholder flex items-center justify-center">
+										<svg class="w-16 h-16 text-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+										</svg>
+									</div>
+								{% endif %}
+                                <div class="absolute top-4 right-4">
+                                    <span class="badge-category-sm bg-white/90 backdrop-blur-sm text-primary shadow-sm">
+                                        {{ boat.type.label }}
+                                    </span>
+                                </div>
+							</a>
+
+
+							{# Contenu de la carte #}
+							<div class="p-6 flex flex-col flex-1">
+								{# Titre #}
+								<h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-1">
+									<a class="hover:text-primary transition-colors" href="{{ path('app_boat_show', {id: boat.id}) }}">
+										{{ boat.name }}
+									</a>
+								</h3>
+
+								{# Description courte #}
+								<p class="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">
+									{{ boat.description|default("Pas de descption") }}
+								</p>
+
+								{# informations #}
+								<div class="border-t border-gray-100 pt-4 mt-auto flex items-center justify-between text-sm text-gray-500">
+									<div class="flex items-center gap-4">
+										{# Capacité #}
+										<div class="flex items-center gap-1" title="Capacité">
+											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z"></path>
+											</svg>
+											<span>{{ boat.maxUser }}</span>
+										</div>
+										{# Ville #}
+										<div class="flex items-center gap-1" title="Ville">
+											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+											</svg>
+											<span>{{ boat.adress.city|default('N/A') }}</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<div class="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-100">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+					<h3 class="text-lg font-medium text-gray-900 mb-2">Aucun résultat trouvé</h3>
+					<p class="text-gray-500 mb-6">Essayez de modifier vos filtres ou vos dates de recherche.</p>
+					<a href="{{ path('app_boat_index') }}" class="btn-secondary">
+						Réinitialiser les filtres
+					</a>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+
+    {% if app.user %}
+    {# Script JS pour gérer le calendrier et la persistance des dates (localStorage) #}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const picker = document.getElementById('inline-calendar');
+            if(!picker) return;
+            
+            const startDate = picker.getAttribute('data-start');
+            const endDate = picker.getAttribute('data-end');
+            
+            flatpickr("#inline-calendar", {
+                mode: "range",
+                inline: true,
+                minDate: "today",
+                dateFormat: "Y-m-d",
+                locale: "fr",
+                defaultDate: (startDate && endDate) ? [startDate, endDate] : null,
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length === 2) {
+                        localStorage.setItem('startDate', selectedDates[0].toISOString());
+                        localStorage.setItem('endDate', selectedDates[1].toISOString());
+
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('start', selectedDates[0].toISOString());
+                        url.searchParams.set('end', selectedDates[1].toISOString());
+                        window.location.href = url.toString();
+                    }
+                }
+            });
+        });
+    </script>
+    {% endif %}
+
+{% endblock %}

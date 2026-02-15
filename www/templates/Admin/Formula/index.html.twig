@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Formules{% endblock %}
+
+{% block body %}
+<div class="bg-gray-900 min-h-screen py-12 text-gray-100">
+    <div class="container-main">
+        {# En-tête #}
+        <div class="flex justify-between items-center mb-8 border-b border-gray-700 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold !text-white">Formules de location</h1>
+                <p class="text-gray-400 mt-1">Gérez les tarifs et les options disponibles</p>
+            </div>
+            <div class="flex gap-3">
+                <a href="{{ path('app_admin_dashboard') }}" class="bg-gray-800 hover:bg-gray-700 text-white border border-gray-600 text-sm px-4 py-2 rounded-md transition-colors flex items-center">
+                    &larr; Dashboard
+                </a>
+                <a href="{{ path('app_admin_formula_new') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Nouvelle formule
+                </a>
+            </div>
+        </div>
+
+        {# Tableau #}
+        <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700">
+            <table class="w-full text-sm text-left text-gray-400">
+                <thead class="text-xs text-gray-500 uppercase bg-gray-700/50">
+                    <tr>
+                        <th class="px-6 py-3">Titre</th>
+                        <th class="px-6 py-3">Prix</th>
+                        <th class="px-6 py-3">Description</th>
+                        <th class="px-6 py-3 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700">
+                    {% for formula in formulas %}
+                        <tr class="hover:bg-gray-700/30 transition-colors">
+                            <td class="px-6 py-4 font-medium text-white">{{ formula.title }}</td>
+                            <td class="px-6 py-4 text-blue-400 font-bold">{{ formula.price }} €</td>
+                            <td class="px-6 py-4">{{ formula.description|slice(0, 60) }}...</td>
+                            <td class="px-6 py-4 text-right space-x-3">
+                                <a href="{{ path('app_admin_formula_edit', {'id': formula.id}) }}" class="text-blue-400 hover:text-blue-300 transition-colors font-medium">Modifier</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="px-6 py-8 text-center text-gray-500 italic">Aucune formule enregistrée.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

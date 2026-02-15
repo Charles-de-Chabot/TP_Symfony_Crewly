@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Crewly{% endblock %}
+
+{% block body %}
+    {# Hero Section #}
+    <div class="relative bg-primary-dark overflow-hidden">
+        <div class="absolute inset-0">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary-dark to-primary opacity-90"></div>
+        </div>
+        <div class="relative container-main px-4 py-24 sm:px-6 lg:px-8 lg:py-32 flex flex-col items-center text-center">
+            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl mb-6">
+                L'aventure commence ici
+            </h1>
+            <p class="mt-2 max-w-2xl text-xl text-primary-light mb-10">
+                Louez le bateau de vos rêves et partez à la découverte des plus beaux horizons. Simple, rapide et sécurisé.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <a href="{{ path('app_boat_index') }}" class="btn-secondary bg-white text-primary border-white hover:bg-gray-100 text-lg px-8 py-4">
+                    Réserver maintenant
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# Features Section #}
+    <div class="py-24 bg-white">
+        <div class="container-main">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">Pourquoi choisir Crewly ?</h2>
+                <p class="mt-4 text-lg text-gray-600">Nous rendons la location de bateaux accessible à tous.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="text-center">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-primary-light text-primary mb-6 mx-auto">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Réservation Facile</h3>
+                    <p class="text-gray-600">Quelques clics suffisent pour bloquer vos dates et partir naviguer.</p>
+                </div>
+                <div class="text-center">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-primary-light text-primary mb-6 mx-auto">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Flexibilité</h3>
+                    <p class="text-gray-600">Annulation gratuite jusqu'à 48h avant le départ sur la plupart des bateaux.</p>
+                </div>
+                <div class="text-center">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-primary-light text-primary mb-6 mx-auto">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Paiement Sécurisé</h3>
+                    <p class="text-gray-600">Transactions cryptées et garanties pour votre tranquillité d'esprit.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Section Nouveautés (Bateaux mis en avant) #}
+    <div class="py-24 bg-gray-50">
+        <div class="container-main">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900">Nos derniers ajouts</h2>
+                    <p class="mt-2 text-gray-600">Embarquez sur nos nouveautés.</p>
+                </div>
+                <a href="{{ path('app_boat_index') }}" class="text-primary font-semibold hover:text-primary-dark flex items-center">
+                    Tout voir <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {# Boucle sur les 3 derniers bateaux passés par le contrôleur #}
+                {% for boat in featuredBoats %}
+                    <div class="card-hover overflow-hidden flex flex-col h-full border border-gray-100">
+                        <a href="{{ path('app_boat_show', {id: boat.id}) }}" class="block relative group h-48 overflow-hidden">
+                            {% if boat.media|length > 0 %}
+                                <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="{{ asset('uploads/boats/' ~ boat.media.first.imgPath) }}" alt="{{ boat.name }}">
+                            {% else %}
+                                <div class="w-full h-full gradient-placeholder flex items-center justify-center">
+                                    <span class="text-gray-400">Pas d'image</span>
+                                </div>
+                            {% endif %}
+                            <div class="absolute top-4 right-4">
+                                <span class="badge-category-sm bg-white/90 backdrop-blur-sm text-primary shadow-sm">
+                                    {{ boat.type.label }}
+                                </span>
+                            </div>
+                        </a>
+                        <div class="p-6 flex flex-col flex-1">
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">
+                                <a href="{{ path('app_boat_show', {id: boat.id}) }}" class="hover:text-primary transition-colors">{{ boat.name }}</a>
+                            </h3>
+                            <div class="mt-auto flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100">
+                                <span>{{ boat.maxUser }} pers.</span>
+                                <a href="{{ path('app_boat_show', {id: boat.id}) }}" class="font-semibold text-primary">
+                                    Voir détails
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

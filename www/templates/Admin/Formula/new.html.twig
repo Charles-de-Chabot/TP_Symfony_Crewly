@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Formule{% endblock %}
+
+{% block body %}
+<div class="bg-gray-900 min-h-screen py-12 text-gray-100">
+    <div class="container-main">
+        
+        <div class="flex justify-between items-center mb-8 border-b border-gray-700 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold !text-white">Créer une formule</h1>
+                <p class="text-gray-400 mt-1">Ajouter une nouvelle option de tarification</p>
+            </div>
+            <a href="{{ path('app_admin_formula_index') }}" class="bg-gray-800 hover:bg-gray-700 text-white border border-gray-600 text-sm px-4 py-2 rounded-md transition-colors">
+                &larr; Annuler
+            </a>
+        </div>
+
+        <div class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
+            {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+            {{ form_errors(form) }}
+
+            <div class="space-y-8">
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold !text-white border-b border-gray-700 pb-2">Détails</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-2">
+                            {{ form_label(form.title, 'Titre de la formule', {'label_attr': {'class': 'block text-sm font-medium text-gray-400 mb-1'}}) }}
+                            {{ form_widget(form.title, {'attr': {'class': 'w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500 text-lg font-medium placeholder-gray-500', 'placeholder': 'Ex: Forfait Semaine'}}) }}
+                            {{ form_errors(form.title) }}
+                        </div>
+                        <div>
+                            {{ form_label(form.price, 'Prix', {'label_attr': {'class': 'block text-sm font-medium text-gray-400 mb-1'}}) }}
+                            <div class="relative">
+                                {{ form_widget(form.price, {'attr': {'class': 'w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500 text-lg font-bold text-right pr-8', 'placeholder': '0.00'}}) }}
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-400">€</div>
+                            </div>
+                            {{ form_errors(form.price) }}
+                        </div>
+                    </div>
+
+                    <div>
+                        {{ form_label(form.description) }}
+                        {{ form_widget(form.description, {'attr': {'rows': 5, 'class': 'w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500'}}) }}
+                    </div>
+                </div>
+
+                {% do form.boats.setRendered() %}
+                <div class="hidden">
+                    {{ form_row(form.rentals) }}
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end pt-8 border-t border-gray-700 mt-8">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg transition-colors shadow-lg shadow-blue-900/20">
+                    Créer la formule
+                </button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

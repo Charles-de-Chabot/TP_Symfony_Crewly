@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateur #{{ user.id }}{% endblock %}
+
+{% block body %}
+<div class="bg-gray-900 min-h-screen py-12 text-gray-100">
+    <div class="container-main">
+        {# Notifications #}
+        {% include 'partials/_messages.html.twig' %}
+
+        {# En-tête #}
+        <div class="flex flex-col md:flex-row justify-between items-end gap-4 mb-8 border-b border-gray-700 pb-6">
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-2xl font-bold text-white uppercase shadow-lg">
+                    {{ user.email|first }}
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-white">{{ user.email }}</h1>
+                    <p class="text-gray-400 mt-1">Membre depuis le {{ user.createdAt ? user.createdAt|date('d/m/Y') : 'N/A' }}</p>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <a href="{{ path('app_admin_user_index') }}" class="bg-gray-800 hover:bg-gray-700 text-white border border-gray-600 text-sm px-4 py-2 rounded-md transition-colors">
+                    &larr; Retour à la liste
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {# Colonne Gauche : Infos & Adresse #}
+            <div class="space-y-8">
+                
+                {# Carte Informations #}
+                <div class="bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-700 bg-gray-700/30">
+                        <h2 class="text-lg font-semibold text-white">Informations générales</h2>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">ID Utilisateur</label>
+                            <div class="text-white font-mono">#{{ user.id }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Email</label>
+                            <div class="text-white">{{ user.email }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Statut du compte</label>
+                            {% if user == app.user %}
+                                {# Protection contre l'auto-désactivation #}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-900/50 text-green-400 border border-green-800 opacity-75 cursor-not-allowed">Actif (Vous)</span>
+                            {% else %}
+                                <form method="post" action="{{ path('app_admin_user_toggle_status', {'id': user.id}) }}" class="inline-block">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('toggle-status' ~ user.id) }}">
+                                    <button type="submit" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border transition-all {{ user.isActive ? 'bg-green-900/50 text-green-400 border-green-800 hover:bg-red-900/30 hover:text-red-300 hover:border-red-700' : 'bg-red-900/50 text-red-400 border-red-800 hover:bg-green-900/30 hover:text-green-300 hover:border-green-700' }}">
+                                        <span class="mr-1.5 h-2 w-2 rounded-full {{ user.isActive ? 'bg-green-400' : 'bg-red-400' }}"></span>
+                                        {{ user.isActive ? 'Compte Actif' : 'Compte Inactif' }}
+                                        <span class="ml-1 text-[10px] opacity-70">({{ user.isActive ? 'Désactiver' : 'Activer' }})</span>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Rôles</label>
+                            <div class="flex flex-wrap gap-2">
+                                {% for role in user.roles %}
+                                    <span class="px-2 py-1 bg-gray-700 rounded text-xs text-gray-300 border border-gray-600">{{ role }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Carte Adresse #}
+                <div class="bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-700 bg-gray-700/30">
+                        <h2 class="text-lg font-semibold text-white">Coordonnées</h2>
+                    </div>
+                    <div class="p-6">
+                        {% if user.adress %}
+                            <div class="text-gray-300">
+                                <p class="text-white font-medium mb-1">{{ user.adress.houseNumber }} {{ user.adress.streetName }}</p>
+                                <p>{{ user.adress.postcode }} {{ user.adress.city }}</p>
+                            </div>
+                        {% else %}
+                            <p class="text-gray-500 italic text-sm">Aucune adresse enregistrée.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {# Colonne Droite : Historique Locations #}
+            <div class="lg:col-span-2">
+                <div class="bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-700 bg-gray-700/30 flex justify-between items-center">
+                        <h2 class="text-lg font-semibold text-white">Historique des locations</h2>
+                        <span class="text-xs text-gray-400 bg-gray-700 px-2 py-1 rounded-full">{{ rentals|length }}</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-400">
+                            <thead class="text-xs text-gray-400 uppercase bg-gray-700/50 border-b border-gray-700">
+                                <tr>
+                                    <th class="px-6 py-3">#</th>
+                                    <th class="px-6 py-3">Bateau</th>
+                                    <th class="px-6 py-3">Dates</th>
+                                    <th class="px-6 py-3 text-right">Prix</th>
+                                    <th class="px-6 py-3 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-700">
+                                {% for rental in rentals %}
+                                    <tr class="hover:bg-gray-700/30 transition-colors">
+                                        <td class="px-6 py-4 font-mono text-xs">#{{ rental.id }}</td>
+                                        <td class="px-6 py-4 font-medium text-white">{{ rental.boat.name }}</td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex flex-col text-xs">
+                                                <span>Du {{ rental.rentalStart|date('d/m/Y') }}</span>
+                                                <span>Au {{ rental.rentalEnd|date('d/m/Y') }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-right font-bold text-white">{{ rental.rentalPrice }} €</td>
+                                        <td class="px-6 py-4 text-center">
+                                            <a href="{{ path('app_admin_rental_show', {'id': rental.id}) }}" class="text-blue-400 hover:text-blue-300 text-xs border border-blue-900 bg-blue-900/20 px-2 py-1 rounded transition-colors">
+                                                Détails
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-8 text-center text-gray-500">Aucune location effectuée pour le moment.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Bateau{% endblock %}
+
+{% block body %}
+<div class="bg-gray-900 min-h-screen py-12 text-gray-100">
+    <div class="container-main">
+        
+        {# En-tête #}
+        <div class="flex justify-between items-center mb-8 border-b border-gray-700 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold !text-white">Créer un bateau</h1>
+                <p class="text-gray-400 mt-1">Ajouter un nouveau bateau à la flotte</p>
+            </div>
+            <a href="{{ path('app_admin_boat_index') }}" class="bg-gray-800 hover:bg-gray-700 text-white border border-gray-600 text-sm px-4 py-2 rounded-md transition-colors">
+                &larr; Annuler
+            </a>
+        </div>
+
+        {# Formulaire #}
+        <div class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
+            {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+            
+            {# Affichage des erreurs globales #}
+            {{ form_errors(form) }}
+
+            {# Section Nom & Description (Pleine largeur) #}
+            <div class="space-y-6">
+                <h3 class="text-xl font-bold !text-white border-b border-gray-700 pb-2">Présentation</h3>
+                {{ form_row(form.name) }}
+                <div>
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description, {'attr': {'rows': 6, 'class': 'w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500'}}) }}
+                    {{ form_errors(form.description) }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                {# Colonne Gauche : Infos principales #}
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold !text-white border-b border-gray-700 pb-2">Média & Configuration</h3>
+
+                    {# Upload Image #}
+                    <div class="bg-gray-700/30 p-4 rounded-lg border border-gray-700">
+                        <label class="block text-xs text-gray-400 uppercase mb-2">Image principale</label>
+                        {{ form_widget(form.picture, {'attr': {'class': 'block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer bg-gray-700 border-gray-600 rounded-lg'}}) }}
+                        {{ form_errors(form.picture) }}
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        {{ form_row(form.fuel) }}
+                        {{ form_row(form.cabineNumber) }}
+                    </div>
+
+                    <div class="bg-gray-700/30 p-4 rounded-lg border border-gray-700">
+                        {{ form_row(form.isActive) }}
+                    </div>
+                </div>
+
+                {# Colonne Droite : Specs & Prix #}
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold !text-white border-b border-gray-700 pb-2">Caractéristiques & Tarifs</h3>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        {{ form_row(form.boatLength) }}
+                        {{ form_row(form.boatWidth) }}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        {{ form_row(form.boatDraught) }}
+                        {{ form_row(form.powerEngine) }}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        {{ form_row(form.maxUser) }}
+                        {{ form_row(form.bedNumber) }}
+                    </div>
+
+                    <h3 class="text-xl font-bold !text-white border-b border-gray-700 pb-2 mt-6">Classification</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        {{ form_row(form.model) }}
+                        {{ form_row(form.type) }}
+                    </div>
+                </div>
+            </div>
+
+            {# Masquer les champs techniques et la formule pour qu'ils ne s'affichent pas via form_end #}
+            {% do form.formula.setRendered() %}
+
+            <div class="flex items-center justify-end gap-4 pt-8 border-t border-gray-700 mt-8">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg transition-colors shadow-lg shadow-blue-900/20 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Créer le bateau
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

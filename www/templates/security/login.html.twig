@@ -1,0 +1,76 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Connecte toi!
+{% endblock %}
+
+
+{% block body %}
+	<div class="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+		<div class="container-form space-y-8">
+			<div class="text-center">
+				<a class="inline-block mb-8 group" href="#">
+					<img class="h-16 mx-auto transition-transform duration-200 group-hover:scale-105" src="/images/logo.png" alt="CreativeHub">
+				</a>
+				<h1 class="text-3xl text-gray-900 mb-2">{{ "Connexion"|upper }}</h1>
+				<p class="text-sm text-gray-600">
+					Pas encore de compte ?
+					<a class="font-medium transition-colors text-primary hover:text-primary-hover" href="{{ path('app_register') }}">Créer un compte</a>
+				</p>
+			</div>
+			<!-- FORMULAIRE -->
+			<div class="card p-8">
+				<form method="post" class="space-y-6">
+					{% if error %}
+						<div class="alert-error">
+							<div class="flex">
+								<div class="shrink-0">
+									<svg class="icon text-red-400" viewbox="0 0 20 20" fill="currentColor">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+									</svg>
+								</div>
+								<div class="ml-3">
+									<p class="text-sm text-red-700">{{ error.messageKey|trans(error.messageData, 'security' ) }}</p>
+								</div>
+							</div>
+						</div>
+
+					{% endif %}
+
+					{% if app.user %}
+						<div class="alert-info">
+							<div class="flex">
+								<div class="ml-3">
+									<p class="text-sm text-blue-700">
+										Vous êtes connecté en tant que
+										<strong>{{ app.user.firstName }}</strong>
+										<a class="text-blue-600 hover:text-blue-500 ml-2" href="{{ path('app_logout') }}">Déconnexion</a>
+									</p>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+
+					<input
+					type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+					<!-- email -->
+					<div>
+						<label for="username" class="form-label">Email</label>
+						<input type="email" name="_username" id="username" class="form-input" placeholder="votre@email.com" value="{{ last_username }}" autocomplete="email" required autofocus>
+					</div>
+					<!-- password -->
+					<div>
+						<label for="password" class="form-label">Mot de passe</label>
+						<input type="password" name="_password" id="password" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
+					</div>
+					<!-- bouton submit -->
+					<div>
+						<button class="btn-primary-lg w-full" type="submit">Se connecter</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %}

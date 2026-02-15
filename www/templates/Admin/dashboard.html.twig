@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration - Crewly{% endblock %}
+
+{% block body %}
+<div class="bg-gray-900 min-h-screen py-12 text-gray-100">
+    <div class="container-main">
+        <div class="mb-8 flex justify-between items-center border-b border-gray-700 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-white">Tableau de bord Admin</h1>
+                <p class="text-gray-200 mt-1">Bienvenue dans l'espace d'administration, <span class="text-blue-300 font-semibold">{{ app.user.pseudo|default('Admin') }}</span>.</p>
+            </div>
+            <a href="{{ path('app_home') }}" class="bg-gray-800 hover:bg-gray-700 text-white border border-gray-600 text-sm px-4 py-2 rounded-md transition-colors">
+                ← Retour au site
+            </a>
+        </div>
+
+        {# Section Statistiques #}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <!-- Carte Utilisateurs -->
+            <div class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="!text-gray-200 font-medium">Utilisateurs inscrits</h3>
+                    <span class="bg-blue-900/50 text-blue-200 text-xs font-semibold px-2.5 py-0.5 rounded border border-blue-800">Total</span>
+                </div>
+                <div class="flex items-baseline">
+                    <span class="text-4xl font-bold text-white">{{ userCount }}</span>
+                </div>
+            </div>
+
+            <!-- Carte Bateaux -->
+            <div class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="!text-gray-200 font-medium">Flotte de bateaux</h3>
+                    <span class="bg-green-900/50 text-green-200 text-xs font-semibold px-2.5 py-0.5 rounded border border-green-800">Actifs</span>
+                </div>
+                <div class="flex items-baseline">
+                    <span class="text-4xl font-bold text-white">{{ boatCount }}</span>
+                </div>
+            </div>
+
+            <!-- Carte Locations -->
+            <div class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="!text-gray-200 font-medium">Locations totales</h3>
+                    <span class="bg-purple-900/50 text-purple-200 text-xs font-semibold px-2.5 py-0.5 rounded border border-purple-800">Historique</span>
+                </div>
+                <div class="flex items-baseline">
+                    <span class="text-4xl font-bold text-white">{{ rentalCount }}</span>
+                </div>
+            </div>
+        </div>
+
+        {# Section Actions Rapides (Liens CRUD) #}
+        <h2 class="text-xl font-bold !text-white mb-6">Gestion des contenus</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            
+            <a href="{{ path('app_admin_boat_index') }}" class="group bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-700 hover:border-primary hover:shadow-md hover:shadow-primary/20 transition-all">
+                <div class="h-10 w-10 rounded-full bg-gray-700 text-blue-300 flex items-center justify-center mb-4 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m3 13.5l8-11.47V13.5zm9.5 0c1.35-3.75 1.17-8.79 0-12.5c4.76 1.54 8.4 7.4 8.46 12.5zm8.6 3.58c-.41.64-.89 1.19-1.45 1.66c-.65-.29-1.23-.74-1.69-1.24c-1.49 1.93-4.5 1.93-5.99 0c-1.47 1.93-4.5 1.93-5.97 0c-.5.5-1.05.95-1.7 1.24c-1.14-.94-2-2.28-2.3-3.74h19.94a6.4 6.4 0 0 1-.84 2.08M20.96 23q-1.59 0-3-.75c-1.84 1-4.15 1-5.99 0c-1.84 1-4.15 1-5.97 0c-1.23.69-2.64.8-4 .75v-2c1.41.05 2.77-.1 4-1c1.74 1.25 4.21 1.25 5.97 0c1.77 1.25 4.23 1.25 5.99 0c1.21.9 2.58 1.05 3.98 1v2z"/></svg>
+                </div>
+                <h3 class="font-bold !text-white mb-1">Bateaux</h3>
+                <p class="text-sm text-gray-200">Ajouter, modifier ou supprimer des bateaux.</p>
+            </a>
+
+            <a href="{{ path('app_admin_user_index') }}" class="group bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-700 hover:border-primary hover:shadow-md hover:shadow-primary/20 transition-all">
+                <div class="h-10 w-10 rounded-full bg-gray-700 text-blue-300 flex items-center justify-center mb-4 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </div>
+                <h3 class="font-bold !text-white mb-1">Utilisateurs</h3>
+                <p class="text-sm text-gray-200">Gérer les comptes et les accès.</p>
+            </a>
+
+            <a href="{{ path('app_admin_rental_index') }}" class="group bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-700 hover:border-primary hover:shadow-md hover:shadow-primary/20 transition-all">
+                <div class="h-10 w-10 rounded-full bg-gray-700 text-blue-300 flex items-center justify-center mb-4 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <h3 class="font-bold !text-white mb-1">Locations</h3>
+                <p class="text-sm text-gray-200">Voir l'historique des réservations.</p>
+            </a>
+
+            <a href="{{ path('app_admin_formula_index') }}" class="group bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-700 hover:border-primary hover:shadow-md hover:shadow-primary/20 transition-all">
+                <div class="h-10 w-10 rounded-full bg-gray-700 text-blue-300 flex items-center justify-center mb-4 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                </div>
+                <h3 class="font-bold !text-white mb-1">Formules</h3>
+                <p class="text-sm text-gray-200">Gérer les tarifs et options.</p>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

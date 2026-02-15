@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+		
+		{# CSS spécifique pour le sélecteur de date (Flatpickr) #}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+		
+		{% block stylesheets %}
+			{# Webpack Encore : Charge le fichier CSS compilé (app.css) #}
+			{{ encore_entry_link_tags('app') }}
+		{% endblock %}
+
+		{% block javascripts %}
+			{{ encore_entry_link_tags('app') }}
+		{% endblock %}
+	</head>
+	<body>
+			{# Inclusion de la barre de navigation commune à toutes les pages #}
+			{% include 'partials/_navbar.html.twig' %}
+
+			{# Point d'insertion du contenu spécifique à chaque page #}
+			{% block body %}{% endblock %}
+
+			{% include 'partials/_footer.html.twig' %}
+			{# JS pour le calendrier (chargé globalement car utilisé sur plusieurs pages) #}
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	</body>
+</html>

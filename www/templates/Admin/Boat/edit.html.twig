@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le Bateau - {{ boat.name }}{% endblock %}
+
+{% block body %}
+<div class="bg-gray-900 min-h-screen py-12 text-gray-100">
+    <div class="container-main">
+        
+        {# En-tête #}
+        <div class="flex justify-between items-center mb-8 border-b border-gray-700 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold !text-white">Modifier le bateau</h1>
+                <p class="text-gray-400 mt-1">Édition des informations de <span class="text-blue-400">{{ boat.name }}</span></p>
+            </div>
+            <a href="{{ path('app_admin_boat_index') }}" class="bg-gray-800 hover:bg-gray-700 text-white border border-gray-600 text-sm px-4 py-2 rounded-md transition-colors">
+                &larr; Retour à la liste
+            </a>
+        </div>
+
+        {# Formulaire #}
+        <div class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
+            {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+            
+            {# Affichage des erreurs globales #}
+            {{ form_errors(form) }}
+
+            {# Section Nom & Description (Pleine largeur) #}
+            <div class="space-y-6">
+                <h3 class="text-xl font-bold !text-white border-b border-gray-700 pb-2">Présentation</h3>
+                {{ form_row(form.name) }}
+                <div>
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description, {'attr': {'rows': 6, 'class': 'w-full bg-gray-700 border border-gray-600 text-white rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500'}}) }}
+                    {{ form_errors(form.description) }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                {# Colonne Gauche : Infos principales #}
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold !text-white border-b border-gray-700 pb-2">Média & Configuration</h3>
+
+                    {# Gestion des images #}
+                    <div class="bg-gray-700/30 p-4 rounded-lg border border-gray-700">
+                        <div class="flex justify-between items-center mb-3">
+                            <label class="text-sm font-bold text-gray-200">Galerie photos</label>
+                            <span class="text-xs text-gray-500">{{ boat.media|length }} image(s)</span>
+                        </div>
+                        
+                        {% if boat.media is defined and boat.media|length > 0 %}
+                            <div class="grid grid-cols-2 gap-3 mb-4">
+                                {% for media in boat.media %}
+                                    <div class="relative group aspect-video bg-gray-800 rounded-lg overflow-hidden border border-gray-600">
+                                        <img src="{{ asset('uploads/boats/' ~ media.imgPath) }}" alt="Photo du bateau" class="w-full h-full object-cover">
+                                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <button type="button" class="text-red-400 hover:text-red-300 bg-gray-900/80 p-2 rounded-full hover:bg-gray-900 transition-colors" title="Supprimer cette image">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="border-t border-gray-600 pt-4">
+                            <label class="block text-xs text-gray-400 uppercase mb-2">Ajouter une nouvelle image</label>
+                            {{ form_widget(form.picture, {'attr': {'class': 'block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer bg-gray-700 border-gray-600 rounded-lg'}}) }}
+                            {{ form_errors(form.picture) }}
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        {{ form_row(form.fuel) }}
+                        {{ form_row(form.cabineNumber) }}
+                    </div>
+
+                    <div class="bg-gray-700/30 p-4 rounded-lg border border-gray-700">
+                        {{ form_row(form.isActive) }}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <div>
+                            <span class="block text-xs text-gray-500 uppercase mb-1">Créé le</span>
+                            <span class="block text-sm text-gray-300 font-mono">{{ boat.createdAt ? boat.createdAt|date('d/m/Y H:i') : '-' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs text-gray-500 uppercase mb-1">Mis à jour le</span>
+                            <span class="block text-sm text-gray-300 font-mono">{{ boat.updatedAt ? boat.updatedAt|date('d/m/Y H:i') : '-' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {# Colonne Droite : Specs & Prix #}
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold !text-white border-b border-gray-700 pb-2">Caractéristiques & Tarifs</h3>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        {{ form_row(form.boatLength) }}
+                        {{ form_row(form.boatWidth) }}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        {{ form_row(form.boatDraught) }}
+                        {{ form_row(form.powerEngine) }}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        {{ form_row(form.maxUser) }}
+                        {{ form_row(form.bedNumber) }}
+                    </div>
+
+                    <h3 class="text-xl font-bold !text-white border-b border-gray-700 pb-2 mt-6">Classification</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        {{ form_row(form.model) }}
+                        {{ form_row(form.type) }}
+                    </div>
+                </div>
+            </div>
+
+            {# Section Adresse (si le formulaire l'inclut) #}
+            {% if form.adress is defined %}
+            <div class="mt-8 pt-6 border-t border-gray-700">
+                <h3 class="text-xl font-bold !text-white mb-4">Localisation</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        {{ form_row(form.adress.houseNumber) }}
+                        {{ form_row(form.adress.streetName) }}
+                    </div>
+                    {{ form_row(form.adress.postcode) }}
+                    {{ form_row(form.adress.city) }}
+                </div>
+            </div>
+            {% endif %}
+
+            {# Masquer les champs techniques et la formule pour qu'ils ne s'affichent pas via form_end #}
+            {% do form.formula.setRendered() %}
+
+            <div class="flex items-center justify-end gap-4 pt-8 border-t border-gray-700 mt-8">
+                <a href="{{ path('app_admin_boat_show', {'id': boat.id}) }}" class="text-gray-400 hover:text-white transition-colors">Annuler</a>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg transition-colors shadow-lg shadow-blue-900/20 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Enregistrer les modifications
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration des Locations{% endblock %}
+
+{% block body %}
+<div class="bg-gray-900 min-h-screen py-12 text-gray-100">
+    <div class="container-main">
+        
+        {# Affichage des notifications (succès/erreur) #}
+        {% include 'partials/_messages.html.twig' %}
+
+        {# En-tête de la page #}
+        <div class="flex flex-col md:flex-row justify-between items-end gap-4 mb-8 border-b border-gray-700 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-white">Gestion des Locations</h1>
+                <p class="text-gray-400 mt-2">Vue d'ensemble des réservations.</p>
+            </div>
+            <a href="{{ path('app_admin_dashboard') }}" class="bg-gray-800 hover:bg-gray-700 text-white border border-gray-600 text-sm px-4 py-2 rounded-md transition-colors">
+                &larr; Retour au tableau de bord
+            </a>
+        </div>
+
+        {# Tableau des réservations #}
+        <div class="bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-400">
+                    <thead class="text-xs text-gray-400 uppercase bg-gray-700/50 border-b border-gray-700">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">#ID</th>
+                            <th scope="col" class="px-6 py-4">Statut</th>
+                            <th scope="col" class="px-6 py-4">Client</th>
+                            <th scope="col" class="px-6 py-4">Bateau</th>
+                            <th scope="col" class="px-6 py-4">Période</th>
+                            <th scope="col" class="px-6 py-4 text-right">Montant</th>
+                            <th scope="col" class="px-6 py-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        {% for rental in rentals %}
+                            {# Logique d'affichage du statut en fonction de la date actuelle #}
+                            {% set now = date() %}
+                            {% set status_classes = 'bg-gray-700/50 text-gray-400 border border-gray-600' %}
+                            {% set status_label = 'Terminée' %}
+                            
+                            {% if rental.rentalStart > now %}
+                                {% set status_classes = 'bg-blue-900/50 text-blue-400 border border-blue-800' %}
+                                {% set status_label = 'À venir' %}
+                            {% elseif rental.rentalEnd >= now %}
+                                {% set status_classes = 'bg-green-900/50 text-green-400 border border-green-800' %}
+                                {% set status_label = 'En cours' %}
+                            {% endif %}
+
+                            <tr class="hover:bg-gray-700/30 transition-colors">
+                                <td class="px-6 py-4 font-mono text-xs text-gray-500">#{{ rental.id }}</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ status_classes }}">
+                                        {{ status_label }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex-shrink-0 w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-xs font-bold text-gray-300 uppercase">
+                                            {{ rental.user.email|first }}
+                                        </div>
+                                        <div class="text-white">{{ rental.user.email }}</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <a href="{{ path('app_admin_boat_show', {'id': rental.boat.id}) }}" class="text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                                        {{ rental.boat.name }}
+                                    </a>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex flex-col text-xs">
+                                        <span class="text-gray-300">Du {{ rental.rentalStart ? rental.rentalStart|date('d/m/Y') : 'N/A' }}</span>
+                                        <span class="text-gray-500">Au {{ rental.rentalEnd ? rental.rentalEnd|date('d/m/Y') : 'N/A' }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-right font-bold text-white">{{ rental.rentalPrice }} €</td>
+                                <td class="px-6 py-4 text-right">
+                                    <a href="{{ path('app_admin_rental_show', {'id': rental.id}) }}" class="text-gray-400 hover:text-white transition-colors" title="Voir les détails">
+                                        <svg class="w-5 h-5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="px-6 py-12 text-center">
+                                    <div class="flex flex-col items-center justify-center text-gray-500">
+                                        <svg class="w-12 h-12 mb-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        <p class="text-lg font-medium text-gray-400">Aucune location enregistrée.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="bg-gray-700/30 px-6 py-3 border-t border-gray-700">
+                <p class="text-xs text-gray-500">Total : {{ rentals|length }} enregistrements</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
