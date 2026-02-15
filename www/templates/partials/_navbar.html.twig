@@ -33,11 +33,12 @@
 			<!-- Actions utilisateur -->
 			<div class="hidden md:flex items-center space-x-4">
 				{% if app.user %}
-					<a class="btn-primary flex items-center space-x-2" href="#">
-						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-						</svg>
-						<span>Mon compte</span>
+					<a class="flex items-center space-x-2" href="#">
+						<div class="avatar-md mr-2">
+							<span class="avatar-initial text-white">
+								{{ app.user.firstName|upper }}
+							</span>
+						</div>
 					</a>
 					<a class="link-nav" href="{{ path('app_logout') }}">Déconnexion</a>
 				{% else %}
