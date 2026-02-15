@@ -19,12 +19,9 @@
 				</a>
 
 				{% if app.user %}
-					<a class="link-nav {{ app.request.attributes.get('_route') == 'app_boat_new' ? 'active' : '' }}" href="#">
-						Créer une flotte
-					</a>
 
 					{% if is_granted('ROLE_ADMIN') %}
-						<a class="link-nav {{ app.request.attributes.get('_route') == 'app_admin' ? 'active' : '' }}" href="#">
+						<a class="link-nav {{ app.request.attributes.get('_route') == 'app_admin' ? 'active' : '' }}" href="{{ path('app_admin_dashboard') }}">
 							Dashboard
 						</a>
 					{% endif %}
@@ -73,9 +70,8 @@
 				</a>
 
 				{% if app.user %}
-					<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="#">Créer une flotte</a>
 					<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="{{ path('app_profile_show') }}">Mon compte</a>
-					<a class="block px-3 py-2 rounded-md text-base font-medium text-accent hover:text-accent/80 hover:bg-gray-50" href="#">Dashboard</a>
+					<a class="block px-3 py-2 rounded-md text-base font-medium text-accent hover:text-accent/80 hover:bg-gray-50" href="{{ path('app_admin_dashboard') }}">Dashboard</a>
 
 					<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="{{ path('app_logout') }}" onclick="localStorage.clear()">Déconnexion</a>
 

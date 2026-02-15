@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration - Crewly{% endblock %}
+
+{% block body %}
+<div class="bg-gray-50 min-h-screen py-12">
+    <div class="container-main">
+        <div class="mb-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Tableau de bord</h1>
+                <p class="text-gray-600 mt-1">Bienvenue dans l'espace d'administration, {{ app.user.pseudo|default('Admin') }}.</p>
+            </div>
+            <a href="{{ path('app_home') }}" class="btn-secondary text-sm px-4 py-2">
+                Retour au site
+            </a>
+        </div>
+
+        {# Section Statistiques #}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <!-- Carte Utilisateurs -->
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-gray-500 font-medium">Utilisateurs inscrits</h3>
+                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Total</span>
+                </div>
+                <div class="flex items-baseline">
+                    <span class="text-3xl font-bold text-gray-900">{{ userCount }}</span>
+                </div>
+            </div>
+
+            <!-- Carte Bateaux -->
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-gray-500 font-medium">Flotte de bateaux</h3>
+                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Actifs</span>
+                </div>
+                <div class="flex items-baseline">
+                    <span class="text-3xl font-bold text-gray-900">{{ boatCount }}</span>
+                </div>
+            </div>
+
+            <!-- Carte Locations -->
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-gray-500 font-medium">Locations totales</h3>
+                    <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">Historique</span>
+                </div>
+                <div class="flex items-baseline">
+                    <span class="text-3xl font-bold text-gray-900">{{ rentalCount }}</span>
+                </div>
+            </div>
+        </div>
+
+        {# Section Actions Rapides (Liens CRUD) #}
+        <h2 class="text-xl font-bold text-gray-900 mb-6">Gestion des contenus</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            
+            {# Note: Ces liens supposent que vous avez généré les CRUD (make:crud) #}
+            {# Si les routes n'existent pas encore, commentez-les ou créez les CRUD #}
+
+            <a href="{{ path('app_boat_index') }}" class="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-primary hover:shadow-md transition-all">
+                <div class="h-10 w-10 rounded-full bg-blue-50 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1">Bateaux</h3>
+                <p class="text-sm text-gray-500">Ajouter, modifier ou supprimer des bateaux.</p>
+            </a>
+
+            {# Exemple de lien vers un CRUD Utilisateur (à créer si inexistant) #}
+            {# <a href="{{ path('app_user_index') }}" class="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-primary hover:shadow-md transition-all"> #}
+            <div class="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 opacity-75">
+                <div class="h-10 w-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1">Utilisateurs</h3>
+                <p class="text-sm text-gray-500">Gérer les comptes (Route à créer).</p>
+            </div>
+            {# </a> #}
+
+            {# Exemple de lien vers un CRUD Location (à créer si inexistant) #}
+            {# <a href="{{ path('app_rental_index') }}" class="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-primary hover:shadow-md transition-all"> #}
+            <div class="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 opacity-75">
+                <div class="h-10 w-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1">Locations</h3>
+                <p class="text-sm text-gray-500">Voir toutes les réservations (Route à créer).</p>
+            </div>
+            {# </a> #}
+
+            {# Exemple de lien vers un CRUD Formule (à créer si inexistant) #}
+            {# <a href="{{ path('app_formula_index') }}" class="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-primary hover:shadow-md transition-all"> #}
+            <div class="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 opacity-75">
+                <div class="h-10 w-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1">Formules</h3>
+                <p class="text-sm text-gray-500">Gérer les tarifs (Route à créer).</p>
+            </div>
+            {# </a> #}
+        </div>
+    </div>
+</div>
+{% endblock %}

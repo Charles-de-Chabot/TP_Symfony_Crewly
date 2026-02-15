@@ -49,8 +49,6 @@ final class RentalController extends AbstractController
         $rental->setBoat($boat);
 
         try {
-            $rental->setRentalStart(new \DateTime($startStr));
-            $rental->setRentalEnd(new \DateTime($endStr));
             $start = new \DateTime($startStr);
             $end = new \DateTime($endStr);
             $rental->setRentalStart($start);
@@ -201,6 +199,7 @@ final class RentalController extends AbstractController
             }
 
             $rental->setRentalPrice((float) $calculatedPrice);
+            $rental->setUpdatedAt(new \DateTime());
             $entityManager->flush();
 
             $this->addFlash('success', 'Votre location a été modifiée avec succès.');
