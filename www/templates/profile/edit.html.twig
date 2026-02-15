@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon profil - Crewly{% endblock %}
+
+{% block body %}
+	<div class="min-h-screen bg-main py-8">
+		<div class="container-medium">
+			{% include "partials/_messages.html.twig" %}
+
+			<div class="mb-8 flex items-center justify-between">
+				<div>
+					<h1 class="text-4xl font-bold text-gray-900 mb-2">Modifier mon profil</h1>
+					<p class="text-gray-600">Mettez à jour vos informations personnelles</p>
+				</div>
+				<a href="{{ path('app_profile_show') }}" class="text-gray-600 hover:text-gray-900 font-medium flex items-center">
+					<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+					</svg>
+					Retour au profil
+				</a>
+			</div>
+
+			<div class="card card-padded">
+				{{ form_start(form, {'attr': {'class': 'space-y-8'}}) }}
+
+				{# Section Informations Personnelles #}
+				<div>
+					<h2 class="text-xl font-bold text-gray-900 mb-6 border-b border-gray-200 pb-2">Informations personnelles</h2>
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<div>
+							{{ form_label(form.firstName, 'Prénom', {'label_attr': {'class': 'block text-sm font-semibold text-gray-700 mb-1'}}) }}
+							{{ form_widget(form.firstName) }}
+							{{ form_errors(form.firstName, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+						</div>
+						<div>
+							{{ form_label(form.lastName, 'Nom', {'label_attr': {'class': 'block text-sm font-semibold text-gray-700 mb-1'}}) }}
+							{{ form_widget(form.lastName) }}
+							{{ form_errors(form.lastName, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+						</div>
+						<div>
+							{{ form_label(form.email, 'Email', {'label_attr': {'class': 'block text-sm font-semibold text-gray-700 mb-1'}}) }}
+							{{ form_widget(form.email) }}
+							{{ form_errors(form.email, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+						</div>
+						<div>
+							{{ form_label(form.phoneNumber, 'Téléphone', {'label_attr': {'class': 'block text-sm font-semibold text-gray-700 mb-1'}}) }}
+							{{ form_widget(form.phoneNumber) }}
+							{{ form_errors(form.phoneNumber, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+						</div>
+					</div>
+				</div>
+
+				{# Section Adresse #}
+				<div>
+					<h2 class="text-xl font-bold text-gray-900 mb-6 border-b border-gray-200 pb-2">Mon Adresse</h2>
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<div class="md:col-span-1">
+							{{ form_label(form.houseNumber, null, {'label_attr': {'class': 'block text-sm font-semibold text-gray-700 mb-1'}}) }}
+							{{ form_widget(form.houseNumber) }}
+							{{ form_errors(form.houseNumber, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+						</div>
+						<div class="md:col-span-1">
+							{{ form_label(form.streetName, null, {'label_attr': {'class': 'block text-sm font-semibold text-gray-700 mb-1'}}) }}
+							{{ form_widget(form.streetName) }}
+							{{ form_errors(form.streetName, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+						</div>
+						<div>
+							{{ form_label(form.postcode, null, {'label_attr': {'class': 'block text-sm font-semibold text-gray-700 mb-1'}}) }}
+							{{ form_widget(form.postcode) }}
+							{{ form_errors(form.postcode, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+						</div>
+						<div>
+							{{ form_label(form.city, null, {'label_attr': {'class': 'block text-sm font-semibold text-gray-700 mb-1'}}) }}
+							{{ form_widget(form.city) }}
+							{{ form_errors(form.city, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+						</div>
+					</div>
+				</div>
+
+				<div class="flex justify-end pt-6 border-t border-gray-200">
+					<a href="{{ path('app_profile_show') }}" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 font-medium mr-4 transition-colors">Annuler</a>
+					<button type="submit" class="btn-primary">Enregistrer les modifications</button>
+				</div>
+
+				{{ form_end(form) }}
+			</div>
+		</div>
+	</div>
+{% endblock %}

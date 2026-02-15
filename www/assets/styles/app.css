@@ -69,9 +69,9 @@ h3 { font-weight: 600; }
     --color-success: #2CB67D;          /* Succès - Vert Émeraude (Plus doux) */
     --color-success-light: #E3F9E5;    /* Succès clair */
     --color-success-border: #2CB67D;   /* Bordure succès */
-    --color-alert: #FFCB47;            /* Alerte - Jaune Soleil (Plus chaud) */
-    --color-alert-light: #FFF8E1;      /* Alerte clair */
-    --color-alert-border: #FFCB47;     /* Bordure alerte */
+    --color-alert: #FF9F1C;            /* Alerte - Jaune Orangé */
+    --color-alert-light: #FFF7ED;      /* Alerte clair */
+    --color-alert-border: #FF9F1C;     /* Bordure alerte */
     --color-error: #E53E3E;            /* Erreur - Rouge Corail */
     --color-error-light: #FFE3E3;      /* Erreur clair */
     --color-error-border: #E53E3E;     /* Bordure erreur */

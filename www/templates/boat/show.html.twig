@@ -9,6 +9,9 @@
 
     <div class="min-h-screen bg-main py-8">
         <div class="container-medium">
+            {# Flatpickr CSS #}
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+            <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
 
             {% include "partials/_messages.html.twig" %}
 
@@ -39,8 +42,9 @@
                         <h1 class="block mt-1 text-2xl leading-tight font-bold text-gray-900">{{ boat.name }}</h1>
 
                         {# Conteneur pour les dates (rempli par JS via localStorage) #}
-                        <div id="booking-dates-container" class="hidden mt-3 inline-flex items-center px-3 py-1 rounded-lg bg-primary-light text-primary-dark text-sm font-medium">
+                        <div id="booking-dates-container" class="relative hidden mt-3 inline-flex items-center px-3 py-1 rounded-lg bg-primary-light text-primary-dark text-sm font-medium cursor-pointer hover:opacity-80 transition-opacity" title="Modifier les dates">
                             <span class="mr-2">📅</span> <span id="booking-dates-text"></span>
+                            <input type="text" id="date-picker-trigger" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer">
                         </div>
 
                         <p class="mt-2 text-gray-600">{{ boat.description }}</p>
@@ -52,6 +56,7 @@
                         <div class="mt-6 border-t border-gray-200 pt-6">
                             <dl class="grid grid-cols-2 gap-x-4 gap-y-4">
                                 <div>
+                                
                                     <dt class="text-sm font-medium text-gray-500">Capacité</dt>
                                     <dd class="mt-1 text-sm text-gray-900">{{ boat.maxUser }} personnes</dd>
                                 </div>
@@ -176,11 +181,17 @@
         </div>
     </div>
 
+    {# Flatpickr JS #}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Récupération des dates depuis le localStorage
-            const startDate = localStorage.getItem('startDate');
-            const endDate = localStorage.getItem('endDate');
+            let startDate = localStorage.getItem('startDate');
+            let endDate = localStorage.getItem('endDate');
+            const dateContainer = document.getElementById('booking-dates-container');
+            const dateText = document.getElementById('booking-dates-text');
 
             if (startDate && endDate) {
                 // Formatage des dates en français (dd/mm/yyyy)
@@ -189,12 +200,37 @@
                 const endFormatted = new Date(endDate).toLocaleDateString('fr-FR', options);
 
                 // Injection du texte
-                const textElement = document.getElementById('booking-dates-text');
-                textElement.textContent = `Du ${startFormatted} au ${endFormatted}`;
-
-                // Affichage du conteneur
-                document.getElementById('booking-dates-container').classList.remove('hidden');
+                dateText.textContent = `Du ${startFormatted} au ${endFormatted}`;
+            } else {
+                dateText.textContent = "Sélectionner vos dates";
             }
+            
+            // Affichage du conteneur (toujours visible pour permettre la sélection)
+            dateContainer.classList.remove('hidden');
+
+            // Initialisation du calendrier de modification
+            const datePicker = flatpickr("#date-picker-trigger", {
+                mode: "range",
+                minDate: "today",
+                dateFormat: "Y-m-d",
+                locale: "fr",
+                defaultDate: (startDate && endDate) ? [startDate, endDate] : null,
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length === 2) {
+                        // Mise à jour des variables
+                        startDate = instance.formatDate(selectedDates[0], "Y-m-d");
+                        endDate = instance.formatDate(selectedDates[1], "Y-m-d");
+                        
+                        // Mise à jour du localStorage
+                        localStorage.setItem('startDate', startDate);
+                        localStorage.setItem('endDate', endDate);
+
+                        // Mise à jour de l'affichage
+                        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                        dateText.textContent = `Du ${selectedDates[0].toLocaleDateString('fr-FR', options)} au ${selectedDates[1].toLocaleDateString('fr-FR', options)}`;
+                    }
+                }
+            });
 
             // Gestion de la modale
             const modal = document.getElementById('reservation-modal');
@@ -208,7 +244,27 @@
             const priceTotal = document.getElementById('price-total');
 
             btnReserve.addEventListener('click', () => {
-                if (startDate && endDate) {
+                if (!startDate || !endDate) {
+                    // Affichage du message flash d'erreur via JS
+                    const container = document.querySelector('.container-medium');
+                    const existingAlert = document.getElementById('js-date-alert');
+                    if (existingAlert) existingAlert.remove();
+
+                    const alertDiv = document.createElement('div');
+                    alertDiv.id = 'js-date-alert';
+                    alertDiv.className = 'alert-error mb-6 animate-slide-in';
+                    alertDiv.textContent = 'Veuillez sélectionner des dates de location pour continuer.';
+                    
+                    container.insertBefore(alertDiv, container.firstChild);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                    // Animation du calendrier pour attirer l'attention
+                    dateContainer.classList.add('animate-bounce');
+                    // On retire la classe après l'animation pour pouvoir la rejouer si besoin
+                    setTimeout(() => dateContainer.classList.remove('animate-bounce'), 2000);
+                    return;
+                }
+
                     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
                     const startFormatted = new Date(startDate).toLocaleDateString('fr-FR', options);
                     const endFormatted = new Date(endDate).toLocaleDateString('fr-FR', options);
@@ -342,10 +398,6 @@
                         }
                     }
 
-                } else {
-                    modalDates.textContent = "Veuillez sélectionner des dates sur la page précédente.";
-                    modalDates.classList.add('text-error');
-                }
                 modal.classList.remove('hidden');
             });
 

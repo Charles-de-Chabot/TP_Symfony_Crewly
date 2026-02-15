@@ -27,9 +27,9 @@
             {# Search & Filter Card #}
             <div class="bg-white rounded-xl shadow-xl p-6 md:p-8 mb-12 border border-gray-100">
                 
-                {# Section Dates / Login #}
-                <div class="mb-8 pb-8 border-b border-gray-100">
-                    {% if not app.user %}
+                {% if not app.user %}
+                    {# Section Login #}
+                    <div class="mb-8 pb-8 border-b border-gray-100">
                         <div class="flex flex-col md:flex-row items-center justify-between bg-primary-lighter rounded-lg p-6 border border-primary-light">
                             <div class="mb-4 md:mb-0">
                                 <h3 class="text-lg font-bold text-primary-dark">Prêt à naviguer ?</h3>
@@ -40,39 +40,41 @@
                                 Se connecter
                             </a>
                         </div>
-                    {% else %}
-                        <div class="w-full">
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Dates de navigation</label>
-                            <div class="relative">
-                                {% set dateValue = "" %}
-                                {% if app.request.query.get('start') and app.request.query.get('end') %}
-                                    {% set dateValue = app.request.query.get('start')|date('d/m/Y') ~ " au " ~ app.request.query.get('end')|date('d/m/Y') %}
-                                {% endif %}
-                                <div class="flex items-center">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    </div>
-                                    <input type="text" id="date-picker" 
-                                        class="form-input !pl-12" 
-                                        placeholder="Sélectionnez vos dates de départ et de retour"
-                                        value="{{ dateValue }}"
-                                        data-start="{{ app.request.query.get('start') }}"
-                                        data-end="{{ app.request.query.get('end') }}">
-                                    
-                                    {% if app.request.query.get('start') %}
-                                        <a href="{{ path('app_boat_index') }}" onclick="localStorage.removeItem('startDate'); localStorage.removeItem('endDate');" class="ml-3 text-sm text-error hover:text-red-700 font-medium whitespace-nowrap">
-                                            Effacer
-                                        </a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        {# Script déplacé en bas de page #}
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
 
-                {# Filtres #}
-                <form class="grid grid-cols-1 md:grid-cols-4 gap-6" action="{{ path('app_boat_index') }}" method="get">
+                <div class="flex flex-col lg:flex-row gap-8">
+                    {% if app.user %}
+                        {# Section Calendrier (Gauche) #}
+                        <div class="w-full lg:w-auto flex-shrink-0 flex flex-col items-center justify-center border-b lg:border-b-0 lg:border-r border-gray-100 pb-8 lg:pb-0 lg:pr-8">
+                            <label class="block text-sm font-bold text-gray-700 mb-4">Dates de navigation</label>
+                            
+                            {# Flatpickr CSS #}
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+                            <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+
+                            <div id="inline-calendar" 
+                                data-start="{{ app.request.query.get('start') }}"
+                                data-end="{{ app.request.query.get('end') }}">
+                            </div>
+                            
+                            {% if app.request.query.get('start') %}
+                                <a href="{{ path('app_boat_index') }}" onclick="localStorage.removeItem('startDate'); localStorage.removeItem('endDate');" class="mt-3 text-sm text-error hover:text-red-700 font-medium">
+                                    Effacer la sélection
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {# Section Filtres (Droite ou Pleine largeur) #}
+                    <div class="flex-grow">
+                        <form class="grid grid-cols-1 md:grid-cols-2 {{ app.user ? 'lg:grid-cols-2' : 'lg:grid-cols-4' }} gap-6 h-full content-center" action="{{ path('app_boat_index') }}" method="get">
+                            {# Inputs cachés pour conserver les dates lors du filtrage #}
+                            {% if app.request.query.get('start') %}
+                                <input type="hidden" name="start" value="{{ app.request.query.get('start') }}">
+                                <input type="hidden" name="end" value="{{ app.request.query.get('end') }}">
+                            {% endif %}
+
                     <div>
                         <label for="type" class="form-label">Type de bateau</label>
                         <select name="type" id="type" class="form-select" onchange="this.form.submit()">
@@ -92,7 +94,7 @@
                         </select>
                     </div>
                     <div>
-                        <label for="city" class="form-label">Destination</label>
+                        <label for="city" class="form-label">Port d'attache</label>
                         <select name="city" id="city" class="form-select" onchange="this.form.submit()">
                             <option value="0" {{ currentCity == '0' ? 'selected' : '' }}>Toutes les villes</option>
                             {% for city in cities %}
@@ -103,7 +105,7 @@
                     
                     <div class="flex items-end">
                         {% if currentType != 0 or currentModel != 0 or currentCity != '0' %}
-                            <a href="{{ path('app_boat_index') }}" class="btn-secondary w-full justify-center">
+                            <a href="{{ path('app_boat_index', {'start': app.request.query.get('start'), 'end': app.request.query.get('end')}) }}" class="btn-secondary w-full justify-center">
                                 Réinitialiser
                             </a>
                         {% else %}
@@ -113,6 +115,8 @@
                         {% endif %}
                     </div>
                 </form>
+                    </div>
+                </div>
             </div>
 
 			<!-- Liste des boats -->
@@ -198,18 +202,23 @@
 	</div>
 
     {% if app.user %}
+    {# Flatpickr JS #}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const picker = document.getElementById('date-picker');
+            const picker = document.getElementById('inline-calendar');
             if(!picker) return;
             
             const startDate = picker.getAttribute('data-start');
             const endDate = picker.getAttribute('data-end');
             
-            flatpickr("#date-picker", {
+            flatpickr("#inline-calendar", {
                 mode: "range",
+                inline: true,
                 minDate: "today",
-                dateFormat: "d/m/Y",
+                dateFormat: "Y-m-d",
                 locale: "fr",
                 defaultDate: (startDate && endDate) ? [startDate, endDate] : null,
                 onChange: function(selectedDates, dateStr, instance) {

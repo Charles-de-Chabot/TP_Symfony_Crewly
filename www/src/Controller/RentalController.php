@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Boat;
 use App\Entity\Rental;
+use App\Entity\User;
+use App\Repository\AdressRepository;
 use App\Repository\FormulaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,16 +26,13 @@ final class RentalController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response {
         // 1. Récupérer l'utilisateur en session
+        /** @var User $user */
         $user = $this->getUser();
 
         // 2. Récupérer les données du formulaire
         // Les dates saisies par l'utilisateur
         $startStr = $request->request->get('start');
         $endStr = $request->request->get('end');
-
-        // Le prix total calculé par le JavaScript dans show.html.twig
-        // (Note : Idéalement, il faudrait recalculer le prix ici pour éviter toute modification malveillante)
-        $totalPrice = $request->request->get('totalPrice');
 
         // Les formules sélectionnées (tableau d'IDs)
         $formulaIds = $request->request->all('formulas');
@@ -117,8 +116,140 @@ final class RentalController extends AbstractController
         $entityManager->persist($rental);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Votre location a été enregistrée avec succès !');
+        // Signal pour nettoyer le localStorage côté client
+        $this->addFlash('clear_storage', 'true');
 
-        return $this->redirectToRoute('app_boat_index');
+        // Si l'utilisateur n'a pas d'adresse, on le redirige vers l'édition du profil
+        if (!$user->getAdress()) {
+            $this->addFlash('success', 'Votre location est bien enregistrée. Pour la finaliser, veuillez remplir vos informations complémentaires.');
+            return $this->redirectToRoute('app_profile_edit');
+        }
+
+        $this->addFlash('success', 'Votre location a été enregistrée avec succès !');
+        return $this->redirectToRoute('app_profile_show');
+    }
+
+    #[Route('/{id}/edit', name: 'app_rental_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function edit(
+        Request $request,
+        Rental $rental,
+        FormulaRepository $formulaRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        // Vérifier que l'utilisateur est bien le propriétaire
+        if ($rental->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas modifier cette location.');
+        }
+
+        if ($request->isMethod('POST')) {
+            $startStr = $request->request->get('start');
+            $endStr = $request->request->get('end');
+
+            if (!$startStr || !$endStr) {
+                $this->addFlash('error', 'Veuillez sélectionner des dates.');
+                return $this->redirectToRoute('app_rental_edit', ['id' => $rental->getId()]);
+            }
+
+            try {
+                $start = new \DateTime($startStr);
+                $end = new \DateTime($endStr);
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Format de date invalide.');
+                return $this->redirectToRoute('app_rental_edit', ['id' => $rental->getId()]);
+            }
+
+            // Mise à jour des dates
+            $rental->setRentalStart($start);
+            $rental->setRentalEnd($end);
+
+            // Recalcul du prix (Logique identique à new)
+            $diffDays = $start->diff($end)->days;
+            $days = ($diffDays === 0) ? 1 : $diffDays;
+            $weeks = floor($days / 7);
+            $restDays = $days % 7;
+            $isMixedMode = ($days > 7 && $restDays !== 0);
+
+            $calculatedPrice = 0;
+
+            // On vide les anciennes formules pour recalculer
+            $rental->getFormulas()->clear();
+
+            if ($isMixedMode) {
+                $f3 = $formulaRepository->find(3); // Journée
+                $f4 = $formulaRepository->find(4); // Semaine
+                if ($f3 && $f4) {
+                    $calculatedPrice = ($weeks * $f4->getPrice()) + ($restDays * $f3->getPrice());
+                    $rental->addFormula($f3);
+                    $rental->addFormula($f4);
+                }
+            } elseif ($days == 1) {
+                // Pour l'édition simple, on force la formule Journée (3) par défaut si 1 jour
+                $f3 = $formulaRepository->find(3);
+                if ($f3) {
+                    $calculatedPrice = $f3->getPrice();
+                    $rental->addFormula($f3);
+                }
+            } else {
+                if ($restDays == 0 && $f4 = $formulaRepository->find(4)) {
+                    $calculatedPrice = $weeks * $f4->getPrice();
+                    $rental->addFormula($f4);
+                } elseif ($f3 = $formulaRepository->find(3)) {
+                    $calculatedPrice = $days * $f3->getPrice();
+                    $rental->addFormula($f3);
+                }
+            }
+
+            $rental->setRentalPrice((float) $calculatedPrice);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre location a été modifiée avec succès.');
+            return $this->redirectToRoute('app_profile_show');
+        }
+
+        return $this->render('rental/edit.html.twig', [
+            'rental' => $rental,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_rental_show', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function show(Rental $rental, AdressRepository $adressRepository): Response
+    {
+        // Vérifier que l'utilisateur est bien le propriétaire
+        if ($rental->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas accéder à cette location.');
+        }
+
+        $boat = $rental->getBoat();
+        $adress = $boat ? $adressRepository->findOneBy(['id' => $boat->getAdress()]) : null;
+
+        return $this->render('rental/show.html.twig', [
+            'rental' => $rental,
+            'boat' => $boat,
+            'adress' => $adress,
+        ]);
+    }
+
+    #[Route('/{id}/delete', name: 'app_rental_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function delete(Request $request, Rental $rental, EntityManagerInterface $entityManager): Response
+    {
+        if ($rental->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas supprimer cette location.');
+        }
+
+        if ($rental->getRentalStart() <= new \DateTime()) {
+            $this->addFlash('error', 'Vous ne pouvez pas annuler une location passée ou en cours.');
+            return $this->redirectToRoute('app_profile_show');
+        }
+
+        if ($this->isCsrfTokenValid('delete' . $rental->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($rental);
+            $entityManager->flush();
+            $this->addFlash('success', 'La location a été annulée.');
+        }
+
+        return $this->redirectToRoute('app_profile_show');
     }
 }

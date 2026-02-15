@@ -33,14 +33,14 @@
 			<!-- Actions utilisateur -->
 			<div class="hidden md:flex items-center space-x-4">
 				{% if app.user %}
-					<a class="flex items-center space-x-2" href="#">
+					<a class="flex items-center space-x-2" href="{{ path('app_profile_show') }}">
 						<div class="avatar-md mr-2">
-							<span class="avatar-initial text-white">
+							<span class="avatar-initial">
 								{{ app.user.firstName|upper }}
 							</span>
 						</div>
 					</a>
-					<a class="link-nav" href="{{ path('app_logout') }}">Déconnexion</a>
+					<a class="link-nav" href="{{ path('app_logout') }}" onclick="localStorage.clear()">Déconnexion</a>
 				{% else %}
 					<a class="link-nav" href="{{ path('app_login') }}">Connexion</a>
 					<a class="btn-primary flex items-center space-x-2" href="{{ path('app_register') }}">
@@ -74,10 +74,10 @@
 
 				{% if app.user %}
 					<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="#">Créer une flotte</a>
-					<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="#">Mon compte</a>
+					<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="{{ path('app_profile_show') }}">Mon compte</a>
 					<a class="block px-3 py-2 rounded-md text-base font-medium text-accent hover:text-accent/80 hover:bg-gray-50" href="#">Dashboard</a>
 
-					<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="{{ path('app_logout') }}">Déconnexion</a>
+					<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="{{ path('app_logout') }}" onclick="localStorage.clear()">Déconnexion</a>
 
 				{% else %}
 					<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" href="{{ path('app_login') }}">Connexion</a>
@@ -108,3 +108,10 @@ closeIcon.classList.toggle('hidden');
 
 })
 </script>
+
+{# Nettoyage du localStorage si demandé par le contrôleur (ex: après une location) #}
+{% if app.flashes('clear_storage') %}
+	<script>
+		localStorage.clear();
+	</script>
+{% endif %}
