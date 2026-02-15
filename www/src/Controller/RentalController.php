@@ -108,7 +108,7 @@ final class RentalController extends AbstractController
         }
 
         // Calcul du prix total sécurisé
-        $rental->setRentalPrice((float) $calculatedPrice);
+        $rental->setRentalPrice((int) $calculatedPrice);
 
         // 5. Enregistrement en base de données
         $entityManager->persist($rental);
@@ -198,7 +198,7 @@ final class RentalController extends AbstractController
                 }
             }
 
-            $rental->setRentalPrice((float) $calculatedPrice);
+            $rental->setRentalPrice((int) $calculatedPrice);
             $rental->setUpdatedAt(new \DateTime());
             $entityManager->flush();
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Boat;
 use App\Entity\Rental;
@@ -15,26 +15,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class AdminController extends AbstractController
 {
-    #[Route('/', name: 'app_admin_dashboard')]
+    #[Route('/', name: 'app_admin_dashboard', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        // Récupération des statistiques pour le dashboard
+        // Récupération des compteurs pour le tableau de bord
         $userCount = $entityManager->getRepository(User::class)->count([]);
         $boatCount = $entityManager->getRepository(Boat::class)->count([]);
         $rentalCount = $entityManager->getRepository(Rental::class)->count([]);
 
-        // On pourrait aussi récupérer les dernières locations, etc.
-        $lastRentals = $entityManager->getRepository(Rental::class)->findBy(
-            [],
-            ['id' => 'DESC'],
-            5
-        );
-
-        return $this->render('admin/dashboard.html.twig', [
+        return $this->render('Admin/dashboard.html.twig', [
             'userCount' => $userCount,
             'boatCount' => $boatCount,
             'rentalCount' => $rentalCount,
-            'lastRentals' => $lastRentals,
         ]);
     }
 }

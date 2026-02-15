@@ -21,7 +21,7 @@
 				{% if app.user %}
 
 					{% if is_granted('ROLE_ADMIN') %}
-						<a class="link-nav {{ app.request.attributes.get('_route') == 'app_admin' ? 'active' : '' }}" href="{{ path('app_admin_dashboard') }}">
+						<a class="link-nav {{ app.request.attributes.get('_route') == 'app_admin_dashboard' ? 'active' : '' }}" href="{{ path('app_admin_dashboard') }}">
 							Dashboard
 						</a>
 					{% endif %}

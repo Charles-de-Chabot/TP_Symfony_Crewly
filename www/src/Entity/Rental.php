@@ -24,6 +24,12 @@ class Rental
     #[ORM\Column]
     private ?int $rentalPrice = null;
 
+    #[ORM\Column]
+    private ?\DateTime $createdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $updatedAt = null;
+
     #[ORM\ManyToOne(inversedBy: 'rentals')]
     private ?User $user = null;
 
@@ -40,6 +46,7 @@ class Rental
     public function __construct()
     {
         $this->formulas = new ArrayCollection();
+        $this->createdAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -79,6 +86,30 @@ class Rental
     public function setRentalPrice(int $rentalPrice): static
     {
         $this->rentalPrice = $rentalPrice;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTime $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTime $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
