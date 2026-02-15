@@ -19,7 +19,7 @@ class FormulaController extends AbstractController
     #[Route('/', name: 'app_admin_formula_index', methods: ['GET'])]
     public function index(FormulaRepository $formulaRepository): Response
     {
-        return $this->render('Admin/formula/index.html.twig', [
+        return $this->render('Admin/Formula/index.html.twig', [
             'formulas' => $formulaRepository->findAll(),
         ]);
     }
@@ -40,7 +40,7 @@ class FormulaController extends AbstractController
             return $this->redirectToRoute('app_admin_formula_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('Admin/formula/new.html.twig', [
+        return $this->render('Admin/Formula/new.html.twig', [
             'formula' => $formula,
             'form' => $form,
         ]);
@@ -60,7 +60,7 @@ class FormulaController extends AbstractController
             return $this->redirectToRoute('app_admin_formula_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('Admin/formula/edit.html.twig', [
+        return $this->render('Admin/Formula/edit.html.twig', [
             'formula' => $formula,
             'form' => $form,
         ]);

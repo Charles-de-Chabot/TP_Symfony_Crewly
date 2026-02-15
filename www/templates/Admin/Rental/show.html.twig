@@ -1,0 +1,162 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails Location #{{ rental.id }}{% endblock %}
+
+{% block body %}
+<div class="bg-gray-900 min-h-screen py-12 text-gray-100">
+    <div class="container-main">
+        {# Messages Flash #}
+        {% include 'partials/_messages.html.twig' %}
+
+        {# En-tête #}
+        <div class="flex flex-col md:flex-row justify-between items-end gap-4 mb-8 border-b border-gray-700 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-white">Location #{{ rental.id }}</h1>
+                <p class="text-gray-400 mt-2">Détails complets de la réservation.</p>
+            </div>
+            <div class="flex gap-3">
+                <a href="{{ path('app_admin_rental_index') }}" class="bg-gray-800 hover:bg-gray-700 text-white border border-gray-600 text-sm px-4 py-2 rounded-md transition-colors">
+                    &larr; Retour à la liste
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {# Colonne Gauche : Infos principales #}
+            <div class="lg:col-span-2 space-y-8">
+                
+                {# Carte Détails Location #}
+                <div class="bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-700 bg-gray-700/30">
+                        <h2 class="text-lg font-semibold text-white">Informations de la location</h2>
+                    </div>
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Date de début</label>
+                            <div class="text-white font-medium text-lg">{{ rental.rentalStart|date('d/m/Y') }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Date de fin</label>
+                            <div class="text-white font-medium text-lg">{{ rental.rentalEnd|date('d/m/Y') }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Durée</label>
+                            <div class="text-white">
+                                {% set diff = rental.rentalEnd.diff(rental.rentalStart) %}
+                                {{ diff.days + 1 }} jours
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Statut</label>
+                            {% set now = date() %}
+                            {% if rental.rentalStart > now %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-900/50 text-blue-400 border border-blue-800">À venir</span>
+                            {% elseif rental.rentalEnd >= now %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-900/50 text-green-400 border border-green-800">En cours</span>
+                            {% else %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700/50 text-gray-400 border border-gray-600">Terminée</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {# Carte Bateau #}
+                <div class="bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-700 bg-gray-700/30 flex justify-between items-center">
+                        <h2 class="text-lg font-semibold text-white">Bateau réservé</h2>
+                        <a href="{{ path('app_admin_boat_show', {'id': rental.boat.id}) }}" class="text-sm text-blue-400 hover:text-blue-300">Voir le bateau &rarr;</a>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-start gap-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-gray-700 rounded-lg overflow-hidden border border-gray-600">
+                                {% if rental.boat.media|length > 0 %}
+                                    <img src="{{ asset('uploads/boats/' ~ rental.boat.media.first.imgPath) }}" alt="{{ rental.boat.name }}" class="w-full h-full object-cover">
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center text-gray-500">
+                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Nom</label>
+                                    <div class="text-white font-bold text-lg">{{ rental.boat.name }}</div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Modèle / Type</label>
+                                    <div class="text-gray-300">{{ rental.boat.model.label }} / {{ rental.boat.type.label }}</div>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Localisation</label>
+                                    <div class="text-gray-300 flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                        {{ rental.boat.adress.houseNumber }} {{ rental.boat.adress.streetName }}, {{ rental.boat.adress.postcode }} {{ rental.boat.adress.city }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Colonne Droite : Prix & Client #}
+            <div class="space-y-8">
+                {# Carte Prix #}
+                <div class="bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-700 bg-gray-700/30">
+                        <h2 class="text-lg font-semibold text-white">Tarification</h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-end mb-4">
+                            <span class="text-gray-400">Prix Total</span>
+                            <span class="text-3xl font-bold text-white">{{ rental.rentalPrice }} €</span>
+                        </div>
+                        
+                        <div class="border-t border-gray-700 pt-4 mt-4">
+                            <label class="block text-xs font-medium text-gray-500 uppercase mb-2">Formules appliquées</label>
+                            <ul class="space-y-2">
+                                {% for formula in rental.formulas %}
+                                    <li class="flex justify-between text-sm bg-gray-700/30 p-2 rounded">
+                                        <span class="text-gray-300">{{ formula.title }}</span>
+                                        <span class="text-gray-400">{{ formula.price }} €</span>
+                                    </li>
+                                {% else %}
+                                    <li class="text-sm text-gray-500 italic">Aucune formule spécifique</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {# Carte Client #}
+                <div class="bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-700 bg-gray-700/30">
+                        <h2 class="text-lg font-semibold text-white">Client</h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center text-lg font-bold text-white uppercase border border-gray-600">
+                                {{ rental.user.email|first }}
+                            </div>
+                            <div>
+                                <div class="text-white font-medium">{{ rental.user.email }}</div>
+                                <div class="text-xs text-gray-500">ID: #{{ rental.user.id }}</div>
+                            </div>
+                        </div>
+                        
+                        {% if rental.user.adress %}
+                            <div class="border-t border-gray-700 pt-4">
+                                <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Adresse de facturation</label>
+                                <div class="text-sm text-gray-300">
+                                    {{ rental.user.adress.houseNumber }} {{ rental.user.adress.streetName }}<br>
+                                    {{ rental.user.adress.postcode }} {{ rental.user.adress.city }}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

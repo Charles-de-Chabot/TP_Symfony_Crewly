@@ -20,13 +20,15 @@ class FormulaType extends AbstractType
             ->add('price')
             ->add('boats', EntityType::class, [
                 'class' => Boat::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
                 'multiple' => true,
+                'expanded' => true, // Checkboxes pour une meilleure UX
             ])
             ->add('rentals', EntityType::class, [
                 'class' => Rental::class,
                 'choice_label' => 'id',
                 'multiple' => true,
+                'required' => false,
             ])
         ;
     }

@@ -11,13 +11,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/rental')]
 #[IsGranted('ROLE_ADMIN')]
-class RentalController extends AbstractController
+final class RentalController extends AbstractController
 {
     #[Route('/', name: 'app_admin_rental_index', methods: ['GET'])]
     public function index(RentalRepository $rentalRepository): Response
     {
-        // On trie par date de début décroissante (les plus récentes en premier)
-        return $this->render('Admin/rental/index.html.twig', [
+        return $this->render('Admin/Rental/index.html.twig', [
             'rentals' => $rentalRepository->findBy([], ['rentalStart' => 'DESC']),
         ]);
     }
@@ -25,7 +24,7 @@ class RentalController extends AbstractController
     #[Route('/{id}', name: 'app_admin_rental_show', methods: ['GET'])]
     public function show(Rental $rental): Response
     {
-        return $this->render('Admin/rental/show.html.twig', [
+        return $this->render('Admin/Rental/show.html.twig', [
             'rental' => $rental,
         ]);
     }

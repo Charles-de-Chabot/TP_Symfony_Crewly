@@ -7,6 +7,7 @@ use App\Entity\Boat;
 use App\Entity\Formula;
 use App\Entity\Model;
 use App\Entity\Type;
+use App\Form\AdressType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\AbstractType;
@@ -19,51 +20,88 @@ class BoatType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name')
-            ->add('description')
+            ->add('name', null, [
+                'label' => 'Nom du bateau',
+                'attr' => ['placeholder' => 'Ex: Le Grand Bleu']
+            ])
+            ->add('description', null, [
+                'label' => 'Description détaillée',
+                'attr' => ['placeholder' => 'Décrivez le bateau, ses équipements, son histoire...']
+            ])
             ->add('picture', FileType::class, [
-                'label' => 'Image du bateau',
+                'label' => 'Image principale',
+                'help' => 'Format accepté : JPG, PNG, WEBP (Max 5Mo)',
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
-                    new File([
-                        'maxSize' => '5M',
-                        'mimeTypes' => [
+                    new File(
+                        maxSize: '5M',
+                        mimeTypes: [
                             'image/jpeg',
                             'image/png',
                             'image/webp',
                         ],
-                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPG, PNG, WEBP)',
-                    ])
+                        mimeTypesMessage: 'Veuillez télécharger une image valide (JPG, PNG, WEBP)',
+                    )
                 ],
             ])
-            ->add('maxUser')
-            ->add('createdAt')
-            ->add('updatedAt')
-            ->add('isActive')
-            ->add('boatLength')
-            ->add('boatWidth')
-            ->add('boatDraught')
-            ->add('cabineNumber')
-            ->add('bedNumber')
-            ->add('fuel')
-            ->add('powerEngine')
+            ->add('maxUser', null, [
+                'label' => 'Capacité (personnes)',
+                'attr' => ['placeholder' => 'Ex: 8']
+            ])
+            ->add('isActive', null, [
+                'label' => 'En ligne',
+                'help' => 'Cochez pour rendre le bateau visible sur le site',
+            ])
+            ->add('boatLength', null, [
+                'label' => 'Longueur (m)',
+                'attr' => ['placeholder' => 'Ex: 12.50']
+            ])
+            ->add('boatWidth', null, [
+                'label' => 'Largeur (m)',
+                'attr' => ['placeholder' => 'Ex: 4.20']
+            ])
+            ->add('boatDraught', null, [
+                'label' => 'Tirant d\'eau (m)',
+                'attr' => ['placeholder' => 'Ex: 1.80']
+            ])
+            ->add('cabineNumber', null, [
+                'label' => 'Nombre de cabines',
+                'attr' => ['placeholder' => 'Ex: 3']
+            ])
+            ->add('bedNumber', null, [
+                'label' => 'Nombre de lits',
+                'attr' => ['placeholder' => 'Ex: 6']
+            ])
+            ->add('fuel', null, [
+                'label' => 'Type de carburant',
+                'attr' => ['placeholder' => 'Ex: Diesel, Essence...']
+            ])
+            ->add('powerEngine', null, [
+                'label' => 'Puissance moteur (CV)',
+                'attr' => ['placeholder' => 'Ex: 350']
+            ])
             ->add('type', EntityType::class, [
                 'class' => Type::class,
-                'choice_label' => 'id',
+                'choice_label' => 'label',
+                'label' => 'Type de bateau',
+                'placeholder' => 'Sélectionnez un type',
             ])
             ->add('model', EntityType::class, [
                 'class' => Model::class,
-                'choice_label' => 'id',
+                'choice_label' => 'label',
+                'label' => 'Modèle',
+                'placeholder' => 'Sélectionnez un modèle',
             ])
-            ->add('adress', EntityType::class, [
-                'class' => Adress::class,
-                'choice_label' => 'id',
+            ->add('adress', AdressType::class, [
+                'label' => false,
             ])
             ->add('formula', EntityType::class, [
                 'class' => Formula::class,
-                'choice_label' => 'id',
+                'choice_label' => 'title',
                 'multiple' => true,
+                'expanded' => true,
+                'label' => 'Formules de location',
             ])
         ;
     }

@@ -32,15 +32,17 @@ body {
 }
 
 /* Configuration typographique moderne */
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
-    color: #102A43; /* Bleu Nuit Abyssal - Très élégant et autoritaire */
-    line-height: 1.2;
-}
+@layer base {
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Montserrat', sans-serif;
+        color: #102A43; /* Bleu Nuit Abyssal - Très élégant et autoritaire */
+        line-height: 1.2;
+    }
 
-h1 { font-weight: 800; letter-spacing: -0.02em; }
-h2 { font-weight: 700; letter-spacing: -0.01em; }
-h3 { font-weight: 600; }
+    h1 { font-weight: 800; letter-spacing: -0.02em; }
+    h2 { font-weight: 700; letter-spacing: -0.01em; }
+    h3 { font-weight: 600; }
+}
 
 .prix {
     font-weight: 700; /* Bold */

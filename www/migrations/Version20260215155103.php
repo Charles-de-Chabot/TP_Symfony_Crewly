@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20260215122954 extends AbstractMigration
+final class Version20260215155103 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -26,7 +26,7 @@ final class Version20260215122954 extends AbstractMigration
         $this->addSql('CREATE TABLE formula (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, price INT NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8');
         $this->addSql('CREATE TABLE media (id INT AUTO_INCREMENT NOT NULL, img_path VARCHAR(255) NOT NULL, boat_id INT DEFAULT NULL, INDEX IDX_6A2CA10CA1E84A29 (boat_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8');
         $this->addSql('CREATE TABLE model (id INT AUTO_INCREMENT NOT NULL, label VARCHAR(255) NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8');
-        $this->addSql('CREATE TABLE rental (id INT AUTO_INCREMENT NOT NULL, rental_start DATETIME NOT NULL, rental_end DATETIME NOT NULL, rental_price INT NOT NULL, user_id INT DEFAULT NULL, boat_id INT DEFAULT NULL, INDEX IDX_1619C27DA76ED395 (user_id), INDEX IDX_1619C27DA1E84A29 (boat_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8');
+        $this->addSql('CREATE TABLE rental (id INT AUTO_INCREMENT NOT NULL, rental_start DATETIME NOT NULL, rental_end DATETIME NOT NULL, rental_price INT NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME DEFAULT NULL, user_id INT DEFAULT NULL, boat_id INT DEFAULT NULL, INDEX IDX_1619C27DA76ED395 (user_id), INDEX IDX_1619C27DA1E84A29 (boat_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8');
         $this->addSql('CREATE TABLE rental_formula (rental_id INT NOT NULL, formula_id INT NOT NULL, INDEX IDX_B4D7826EA7CF2329 (rental_id), INDEX IDX_B4D7826EA50A6386 (formula_id), PRIMARY KEY (rental_id, formula_id)) DEFAULT CHARACTER SET utf8');
         $this->addSql('CREATE TABLE type (id INT AUTO_INCREMENT NOT NULL, label VARCHAR(255) NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8');
         $this->addSql('CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, firstname VARCHAR(50) NOT NULL, lastname VARCHAR(50) NOT NULL, phone_number VARCHAR(20) DEFAULT NULL, created_at DATETIME NOT NULL, updated_at DATETIME DEFAULT NULL, is_active TINYINT NOT NULL, adress_id INT DEFAULT NULL, INDEX IDX_8D93D6498486F9AC (adress_id), UNIQUE INDEX UNIQ_IDENTIFIER_EMAIL (email), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8');
