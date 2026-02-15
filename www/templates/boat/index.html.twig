@@ -24,11 +24,11 @@
         <div class="container-main -mt-16 relative z-20">
             {% include "partials/_messages.html.twig" %}
 
-            {# Search & Filter Card #}
+            {# Carte de Recherche et Filtres #}
             <div class="bg-white rounded-xl shadow-xl p-6 md:p-8 mb-12 border border-gray-100">
                 
                 {% if not app.user %}
-                    {# Section Login #}
+                    {# Invitation à la connexion pour les visiteurs #}
                     <div class="mb-8 pb-8 border-b border-gray-100">
                         <div class="flex flex-col md:flex-row items-center justify-between bg-primary-lighter rounded-lg p-6 border border-primary-light">
                             <div class="mb-4 md:mb-0">
@@ -45,11 +45,11 @@
 
                 <div class="flex flex-col lg:flex-row gap-8">
                     {% if app.user %}
-                        {# Section Calendrier (Gauche) #}
+                        {# Sélecteur de dates (Calendrier Flatpickr) #}
                         <div class="w-full lg:w-auto flex-shrink-0 flex flex-col items-center justify-center border-b lg:border-b-0 lg:border-r border-gray-100 pb-8 lg:pb-0 lg:pr-8">
                             <label class="block text-sm font-bold text-gray-700 mb-4">Dates de navigation</label>
                             
-                            {# Flatpickr CSS #}
+                            {# Styles spécifiques au calendrier #}
                             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
                             <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
 
@@ -66,10 +66,10 @@
                         </div>
                     {% endif %}
 
-                    {# Section Filtres (Droite ou Pleine largeur) #}
+                    {# Formulaire de filtres (Type, Modèle, Ville) #}
                     <div class="flex-grow">
                         <form class="grid grid-cols-1 md:grid-cols-2 {{ app.user ? 'lg:grid-cols-2' : 'lg:grid-cols-4' }} gap-6 h-full content-center" action="{{ path('app_boat_index') }}" method="get">
-                            {# Inputs cachés pour conserver les dates lors du filtrage #}
+                            {# Inputs cachés : Permettent de garder les dates sélectionnées quand on change un filtre #}
                             {% if app.request.query.get('start') %}
                                 <input type="hidden" name="start" value="{{ app.request.query.get('start') }}">
                                 <input type="hidden" name="end" value="{{ app.request.query.get('end') }}">
@@ -119,17 +119,18 @@
                 </div>
             </div>
 
-			<!-- Liste des boats -->
+			{# Résultats de la recherche #}
             <div class="mb-6 flex items-center justify-between">
                 <h2 class="text-2xl font-bold text-gray-900">Résultats de recherche</h2>
                 <span class="badge-category">{{ boats|length }} bateau(x)</span>
             </div>
 
 			{% if boats|length > 0 %}
+                {# Grille des bateaux #}
 				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 					{% for boat in boats %}
 						<div class="card-hover overflow-hidden flex flex-col h-full border border-gray-100">
-							<!-- Image du boat -->
+							{# Image du bateau avec lien #}
 							<a class="block relative group" href="{{ path('app_boat_show', {id: boat.id}) }}">
 								{% if boat.media|length > 0 %}
 									<img class="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105" src="{{ asset('uploads/boats/' ~ boat.media.first.imgPath) }}" alt="{{ boat.name }}">
@@ -148,16 +149,16 @@
 							</a>
 
 
-							<!-- contenu de la carte -->
+							{# Contenu de la carte #}
 							<div class="p-6 flex flex-col flex-1">
-								<!-- titre -->
+								{# Titre #}
 								<h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-1">
 									<a class="hover:text-primary transition-colors" href="{{ path('app_boat_show', {id: boat.id}) }}">
 										{{ boat.name }}
 									</a>
 								</h3>
 
-								<!-- description -->
+								{# Description courte #}
 								<p class="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">
 									{{ boat.description|default("Pas de descption") }}
 								</p>
@@ -202,7 +203,7 @@
 	</div>
 
     {% if app.user %}
-    {# Flatpickr JS #}
+    {# Script JS pour gérer le calendrier et la persistance des dates (localStorage) #}
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
 

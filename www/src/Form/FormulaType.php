@@ -10,6 +10,12 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Formulaire de gestion des Formules de prix.
+ *
+ * CONCEPT CLÉ :
+ * - EntityType avec 'multiple' => true : Permet de sélectionner plusieurs entités (ManyToMany)
+ */
 class FormulaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -18,6 +24,7 @@ class FormulaType extends AbstractType
             ->add('title')
             ->add('description')
             ->add('price')
+            // Choix multiple de bateaux (checkboxes grâce à expanded => true)
             ->add('boats', EntityType::class, [
                 'class' => Boat::class,
                 'choice_label' => 'name',

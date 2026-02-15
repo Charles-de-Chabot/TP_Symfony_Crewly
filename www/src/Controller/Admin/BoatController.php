@@ -15,10 +15,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * Admin/BoatController - Gestion de la flotte de bateaux
+ *
+ * CONCEPTS CLÉS :
+ * - CRUD complet : Create, Read, Update (Delete non implémenté pour préservation d'historique)
+ * - Formulaires Symfony : Utilisation de BoatType pour valider et traiter les données complexes
+ * - Filtres Admin : Réutilisation de la logique de filtrage (Repository) pour la liste admin
+ */
 #[Route('/admin/boat')]
 #[IsGranted('ROLE_ADMIN')]
 final class BoatController extends AbstractController
 {
+    /**
+     * Liste des bateaux pour l'administration
+     * Inclut tous les bateaux (même inactifs) avec options de filtrage
+     */
     #[Route('/', name: 'app_admin_boat_index', methods: ['GET'])]
     public function index(
         BoatRepository $boatRepository,
@@ -75,6 +87,12 @@ final class BoatController extends AbstractController
         ]);
     }
 
+    /**
+     * Création d'un nouveau bateau
+     *
+     * @param Request $request Pour traiter la soumission du formulaire
+     * @param EntityManagerInterface $entityManager Pour persister le nouveau bateau
+     */
     #[Route('/new', name: 'app_admin_boat_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -99,6 +117,9 @@ final class BoatController extends AbstractController
         ]);
     }
 
+    /**
+     * Affichage des détails techniques et administratifs d'un bateau
+     */
     #[Route('/{id}', name: 'app_admin_boat_show', methods: ['GET'])]
     public function show(Boat $boat): Response
     {
@@ -107,6 +128,10 @@ final class BoatController extends AbstractController
         ]);
     }
 
+    /**
+     * Modification d'un bateau existant
+     * Met à jour la date de modification (updatedAt) automatiquement
+     */
     #[Route('/{id}/edit', name: 'app_admin_boat_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Boat $boat, EntityManagerInterface $entityManager): Response
     {

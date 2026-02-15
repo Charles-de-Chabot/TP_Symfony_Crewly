@@ -13,10 +13,11 @@
 		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
 		
-		{# 1. Le CSS pour le look du calendrier #}
+		{# CSS spécifique pour le sélecteur de date (Flatpickr) #}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 		
 		{% block stylesheets %}
+			{# Webpack Encore : Charge le fichier CSS compilé (app.css) #}
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
 
@@ -25,12 +26,14 @@
 		{% endblock %}
 	</head>
 	<body>
+			{# Inclusion de la barre de navigation commune à toutes les pages #}
 			{% include 'partials/_navbar.html.twig' %}
 
+			{# Point d'insertion du contenu spécifique à chaque page #}
 			{% block body %}{% endblock %}
 
 			{% include 'partials/_footer.html.twig' %}
-			{# 2. Le JS pour la logique (à mettre avant la fin du body) #}
+			{# JS pour le calendrier (chargé globalement car utilisé sur plusieurs pages) #}
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	</body>
 </html>

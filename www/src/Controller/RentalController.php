@@ -14,9 +14,29 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * RentalController - Gestion du processus de réservation côté client
+ *
+ * CONCEPTS CLÉS :
+ * - Logique métier complexe : Calcul des prix selon la durée (Journée vs Semaine vs Mixte)
+ * - Gestion des dates : DateTime, diff(), formatage
+ * - Sécurité : Vérification que l'utilisateur modifie bien SA location
+ * - Flash Messages : Feedback utilisateur (Succès/Erreur)
+ */
 #[Route('/rental')]
 final class RentalController extends AbstractController
 {
+    /**
+     * Création d'une nouvelle location
+     *
+     * LOGIQUE DE PRIX (Similaire au JS frontend) :
+     * - 1 jour : Prix à la journée
+     * - Semaines complètes : Prix à la semaine
+     * - Mixte (> 7 jours non multiple) : Semaines complètes + Jours restants
+     *
+     * @param Request Données du formulaire (dates, formules)
+     * @param Boat Le bateau choisi (via URL)
+     */
     #[Route('/new/{id}', name: 'app_rental_new', methods: ['POST'])]
     #[IsGranted('ROLE_USER')] // S'assure que l'utilisateur est connecté
     public function new(
@@ -127,6 +147,13 @@ final class RentalController extends AbstractController
         return $this->redirectToRoute('app_profile_show');
     }
 
+    /**
+     * Modification d'une location existante
+     *
+     * SÉCURITÉ :
+     * - Vérifie que le user connecté est le propriétaire de la location
+     * - Recalcule le prix total si les dates changent
+     */
     #[Route('/{id}/edit', name: 'app_rental_edit', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(
@@ -211,6 +238,9 @@ final class RentalController extends AbstractController
         ]);
     }
 
+    /**
+     * Affiche le récapitulatif d'une location
+     */
     #[Route('/{id}', name: 'app_rental_show', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(Rental $rental, AdressRepository $adressRepository): Response
@@ -230,6 +260,13 @@ final class RentalController extends AbstractController
         ]);
     }
 
+    /**
+     * Annulation d'une location
+     *
+     * CONTRAINTES :
+     * - Impossible d'annuler une location passée ou en cours
+     * - Protection CSRF requise
+     */
     #[Route('/{id}/delete', name: 'app_rental_delete', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function delete(Request $request, Rental $rental, EntityManagerInterface $entityManager): Response

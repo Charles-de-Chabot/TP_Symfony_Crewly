@@ -12,10 +12,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * Admin/FormulaController - Gestion des formules de location
+ *
+ * CONCEPTS CLÉS :
+ * - CRUD simple : Gestion d'une entité de configuration (Tarifs)
+ * - Impact Métier : Ces formules sont utilisées dynamiquement dans le calcul du prix (RentalController)
+ * - CSRF : Protection indispensable sur la méthode de suppression
+ */
 #[Route('/admin/formula')]
 #[IsGranted('ROLE_ADMIN')]
 class FormulaController extends AbstractController
 {
+    /**
+     * Liste toutes les formules de tarification disponibles
+     */
     #[Route('/', name: 'app_admin_formula_index', methods: ['GET'])]
     public function index(FormulaRepository $formulaRepository): Response
     {
@@ -24,6 +35,9 @@ class FormulaController extends AbstractController
         ]);
     }
 
+    /**
+     * Ajoute une nouvelle formule de prix
+     */
     #[Route('/new', name: 'app_admin_formula_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -46,6 +60,9 @@ class FormulaController extends AbstractController
         ]);
     }
 
+    /**
+     * Modifie une formule existante
+     */
     #[Route('/{id}/edit', name: 'app_admin_formula_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Formula $formula, EntityManagerInterface $entityManager): Response
     {
@@ -66,6 +83,10 @@ class FormulaController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprime une formule
+     * Vérifie le token CSRF pour éviter les suppressions accidentelles via des liens malveillants
+     */
     #[Route('/{id}', name: 'app_admin_formula_delete', methods: ['POST'])]
     public function delete(Request $request, Formula $formula, EntityManagerInterface $entityManager): Response
     {

@@ -1,4 +1,4 @@
-{# Message flash #}
+{# Boucle sur les messages flash stockés en session (succès, erreur, etc.) #}
 {% for label, messages in app.flashes %}
 	{% for message in messages %}
 		<div class="mb-6 {{ label == 'success' ? 'alert-success' : 'alert-error' }}">

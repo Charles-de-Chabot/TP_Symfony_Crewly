@@ -57,7 +57,7 @@
         </div>
     </div>
 
-    {# Featured Boats #}
+    {# Section Nouveautés (Bateaux mis en avant) #}
     <div class="py-24 bg-gray-50">
         <div class="container-main">
             <div class="flex justify-between items-end mb-12">
@@ -71,6 +71,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {# Boucle sur les 3 derniers bateaux passés par le contrôleur #}
                 {% for boat in featuredBoats %}
                     <div class="card-hover overflow-hidden flex flex-col h-full border border-gray-100">
                         <a href="{{ path('app_boat_show', {id: boat.id}) }}" class="block relative group h-48 overflow-hidden">

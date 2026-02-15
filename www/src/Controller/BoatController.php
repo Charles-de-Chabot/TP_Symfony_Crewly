@@ -14,9 +14,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * BoatController - Catalogue des bateaux
+ *
+ * CONCEPTS CLÉS :
+ * - Filtres multiples : Type, Modèle, Ville, Disponibilité (Dates)
+ * - QueryBuilder : Construction de requêtes SQL dynamiques via Doctrine
+ * - Injection de dépendances : Multiples repositories nécessaires pour les filtres
+ */
 #[Route('/boat')]
 final class BoatController extends AbstractController
 {
+    /**
+     * Liste des bateaux avec système de filtrage avancé
+     *
+     * LOGIQUE DE FILTRE :
+     * 1. Filtres statiques (Type, Modèle, Ville) via findAllWithFilters
+     * 2. Filtre de disponibilité (Dates) via findAvailableBoats (sous-requête d'exclusion)
+     * 3. Intersection des résultats
+     */
     #[Route(name: 'app_boat_index', methods: ['GET'])]
     public function index(
         BoatRepository $boatRepository,
@@ -89,13 +105,17 @@ final class BoatController extends AbstractController
         ]);
     }
 
+    /**
+     * Fiche détail d'un bateau
+     * Affiche les infos, l'adresse et les formules disponibles
+     */
     #[Route('/{id}', name: 'app_boat_show', methods: ['GET'])]
     public function show(int $id, BoatRepository $boatRepository, AdressRepository $adressRepository, FormulaRepository $formulaRepository): Response
     {
         // ========== RÉCUPÉRATION DU boat ==========
 
-        // findActive() : custom query pour boats actifs seulement
-        $boat = $boatRepository->findOneBy(['id' => $id]);
+        // Récupération du bateau (uniquement si actif)
+        $boat = $boatRepository->findOneBy(['id' => $id, 'isActive' => true]);
         $adress = $boat ? $adressRepository->findOneBy(['id' => $boat->getAdress()]) : null;
 
 

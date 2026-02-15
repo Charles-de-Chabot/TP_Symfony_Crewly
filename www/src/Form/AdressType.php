@@ -8,6 +8,13 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Formulaire réutilisable pour l'entité Adress.
+ *
+ * CONCEPT CLÉ :
+ * - Ce formulaire n'est pas destiné à être utilisé seul, mais imbriqué
+ *   dans d'autres formulaires (BoatType, ProfileType) via CollectionType ou directement.
+ */
 class AdressType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

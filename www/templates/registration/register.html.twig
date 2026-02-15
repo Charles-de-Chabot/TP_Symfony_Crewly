@@ -17,10 +17,11 @@
 					<a class="font-medium transition-colors text-primary hover:text-primary-hover" href="{{ path('app_login') }}">Se connecter</a>
 				</p>
 			</div>
-			<!-- FORMULAIRE -->
+			{# Formulaire d'inscription #}
 			<div class="card rounded-xl p-8">
 				{{ form_start(registrationForm, {'attr' : { 'class': 'space-y-6' }}) }}
 
+				{# Affichage global des erreurs de formulaire #}
 				{% if not registrationForm.vars.valid %}
 					<div class="alert-error">
 						<div class="flex">
@@ -39,7 +40,7 @@
 					</div>
 				{% endif %}
 
-				<!-- prénom -->
+				{# Champ Prénom #}
 				<div>
 					{% set firstNameHasError = registrationForm.firstName.vars.errors|length > 0 %}
 					{{ form_label(registrationForm.firstName, null, {'label_attr': {'class': 'form_label'}}) }}
@@ -54,7 +55,7 @@
 					{% endif %}
 				</div>
 
-                <!-- nom -->
+                {# Champ Nom #}
                 <div>
 					{% set lastNameHasError = registrationForm.lastName.vars.errors|length > 0 %}
 					{{ form_label(registrationForm.lastName, null, {'label_attr': {'class': 'form_label'}}) }}
@@ -69,7 +70,7 @@
 					{% endif %}
 				</div>
 
-				<!-- email -->
+				{# Champ Email #}
 				<div>
 					{% set emailHasError = registrationForm.email.vars.errors|length > 0 %}
 					{{ form_label(registrationForm.email, null, {'label_attr': {'class': 'form_label'}}) }}
@@ -85,7 +86,7 @@
 				</div>
 
 
-				<!-- mot de passe -->
+				{# Champ Mot de passe #}
 				<div>
 					{% set passwordHasError = registrationForm.plainPassword.first.vars.errors|length > 0 %}
 					{{ form_label(registrationForm.plainPassword.first, null, {'label_attr': {'class': 'form_label'}}) }}
@@ -100,7 +101,7 @@
 					{% endif %}
 				</div>
 
-				<!-- confirmation mot de passe -->
+				{# Confirmation Mot de passe #}
 				<div>
 					{% set passwordConfirmHasError = registrationForm.plainPassword.second.vars.errors|length > 0 %}
 					{{ form_label(registrationForm.plainPassword.second, null, {'label_attr': {'class': 'form_label'}}) }}
@@ -115,7 +116,7 @@
 					{% endif %}
 				</div>
 
-				<!-- Conditions d'utilisation -->
+				{# Case à cocher CGU #}
 				<div class="flex items-center">
 					<div class="flex items-center h-5">
 						{{ form_widget(registrationForm.agreeTerms, {'attr':{
@@ -135,7 +136,7 @@
 					</div>
 				</div>
 
-				<!-- bouton submit -->
+				{# Bouton de soumission #}
 				<div>
 					<button class="btn-primary-lg w-full" type="submit">Créer mon compte</button>
 				</div>

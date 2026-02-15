@@ -9,7 +9,7 @@
 
     <div class="min-h-screen bg-main py-8">
         <div class="container-medium">
-            {# Flatpickr CSS #}
+            {# Styles pour le calendrier #}
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
             <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
 
@@ -41,7 +41,7 @@
                         </div>
                         <h1 class="block mt-1 text-2xl leading-tight font-bold text-gray-900">{{ boat.name }}</h1>
 
-                        {# Conteneur pour les dates (rempli par JS via localStorage) #}
+                        {# Affichage des dates sélectionnées (rempli dynamiquement par JS) #}
                         <div id="booking-dates-container" class="relative hidden mt-3 inline-flex items-center px-3 py-1 rounded-lg bg-primary-light text-primary-dark text-sm font-medium cursor-pointer hover:opacity-80 transition-opacity" title="Modifier les dates">
                             <span class="mr-2">📅</span> <span id="booking-dates-text"></span>
                             <input type="text" id="date-picker-trigger" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer">
@@ -92,7 +92,7 @@
         </div>
     </div>
 
-    {# Modal de réservation #}
+    {# Modal de confirmation de réservation #}
     <div id="reservation-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-gray-900/40 transition-opacity"></div>
 
@@ -134,7 +134,7 @@
                                         </p>
                                     </div>
 
-                                    {# Sélection de la formule #}
+                                    {# Liste des formules de prix (affichées dynamiquement selon la durée) #}
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Formule de location</label>
                                         <div id="formulas-list" class="space-y-2">
@@ -181,7 +181,7 @@
         </div>
     </div>
 
-    {# Flatpickr JS #}
+    {# Scripts JS : Gestion du calendrier, de la modale et du calcul de prix #}
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
 

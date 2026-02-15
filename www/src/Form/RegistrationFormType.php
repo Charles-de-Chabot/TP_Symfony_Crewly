@@ -17,6 +17,14 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+/**
+ * Formulaire d'inscription.
+ *
+ * CONCEPTS CLÉS :
+ * - RepeatedType : Génère deux champs pour le mot de passe (saisie + confirmation) avec vérification automatique.
+ * - 'mapped' => false : Le mot de passe en clair et la case "Conditions" ne sont pas des propriétés de l'entité User.
+ *   Le mot de passe sera hashé dans le contrôleur avant d'être sauvegardé.
+ */
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -40,7 +48,7 @@ class RegistrationFormType extends AbstractType
                     'autocomplete' => 'family-name',
                 ],
             ])
-           
+
             // email
             ->add('email', EmailType::class, [
                 'label' => 'Email',
@@ -50,7 +58,7 @@ class RegistrationFormType extends AbstractType
                     'autocomplete' => 'email',
                 ],
             ])
-            // Mot de passe
+            // Champ mot de passe répété (Saisie + Confirmation)
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'mapped' => false,
@@ -80,7 +88,7 @@ class RegistrationFormType extends AbstractType
                     ),
                 ],
             ])
-            // Conditions d'utilisation
+            // Case à cocher obligatoire mais non stockée en base
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'label' => 'J\'accepte les conditions d\'utilisation',

@@ -12,10 +12,23 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * Admin/UserController - Gestion des utilisateurs par l'administrateur
+ *
+ * CONCEPTS CLÉS :
+ * - #[IsGranted('ROLE_ADMIN')] : Sécurise tout le contrôleur pour les admins uniquement
+ * - EntityManagerInterface : Utilisé pour modifier le statut (flush)
+ * - CSRF Token : Protection contre les attaques Cross-Site Request Forgery sur les actions sensibles
+ */
 #[Route('/admin/user')]
 #[IsGranted('ROLE_ADMIN')]
 final class UserController extends AbstractController
 {
+    /**
+     * Liste tous les utilisateurs inscrits
+     *
+     * @return Response Vue tableau de bord des utilisateurs
+     */
     #[Route('/', name: 'app_admin_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
@@ -24,6 +37,12 @@ final class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * Affiche le détail d'un utilisateur et son historique de locations
+     *
+     * @param User $user L'entité est injectée automatiquement via le ParamConverter (id dans l'URL)
+     * @param RentalRepository Pour récupérer l'historique des locations de cet utilisateur
+     */
     #[Route('/{id}', name: 'app_admin_user_show', methods: ['GET'])]
     public function show(User $user, RentalRepository $rentalRepository): Response
     {
@@ -33,6 +52,19 @@ final class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * Active ou désactive un compte utilisateur (Ban/Unban)
+     *
+     * @param Request Pour vérifier le token CSRF
+     * @param User L'utilisateur à modifier
+     * @param EntityManagerInterface Pour sauvegarder le changement (flush)
+     *
+     * LOGIQUE :
+     * 1. Vérifie que l'admin ne se désactive pas lui-même
+     * 2. Vérifie le token CSRF pour la sécurité
+     * 3. Inverse le booléen isActive
+     * 4. Redirige vers la page précédente (referer)
+     */
     #[Route('/{id}/toggle-status', name: 'app_admin_user_toggle_status', methods: ['POST'])]
     public function toggleStatus(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {

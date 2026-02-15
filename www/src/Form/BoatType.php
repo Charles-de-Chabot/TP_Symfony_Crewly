@@ -15,6 +15,14 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
+/**
+ * Formulaire de création/édition d'un Bateau.
+ *
+ * CONCEPTS CLÉS :
+ * - FileType avec 'mapped' => false : Gestion manuelle de l'upload (le fichier n'est pas stocké directement en base)
+ * - EntityType : Liste déroulante alimentée par une entité Doctrine (Type, Model)
+ * - Imbrication : Utilisation de AdressType pour gérer l'adresse du bateau dans le même formulaire
+ */
 class BoatType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -28,6 +36,9 @@ class BoatType extends AbstractType
                 'label' => 'Description détaillée',
                 'attr' => ['placeholder' => 'Décrivez le bateau, ses équipements, son histoire...']
             ])
+            // Champ fichier non lié à l'entité ('mapped' => false)
+            // On doit gérer l'upload manuellement dans le contrôleur ou un service
+            // Les contraintes sont définies ici car l'entité n'a pas de propriété "file"
             ->add('picture', FileType::class, [
                 'label' => 'Image principale',
                 'help' => 'Format accepté : JPG, PNG, WEBP (Max 5Mo)',
@@ -81,6 +92,7 @@ class BoatType extends AbstractType
                 'label' => 'Puissance moteur (CV)',
                 'attr' => ['placeholder' => 'Ex: 350']
             ])
+            // Sélection d'une entité liée (ManyToOne)
             ->add('type', EntityType::class, [
                 'class' => Type::class,
                 'choice_label' => 'label',
@@ -93,6 +105,8 @@ class BoatType extends AbstractType
                 'label' => 'Modèle',
                 'placeholder' => 'Sélectionnez un modèle',
             ])
+            // Imbrication du formulaire d'adresse
+            // Les champs de AdressType seront affichés ici
             ->add('adress', AdressType::class, [
                 'label' => false,
             ])

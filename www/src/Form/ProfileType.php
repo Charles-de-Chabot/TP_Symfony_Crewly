@@ -13,6 +13,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+/**
+ * Formulaire d'édition du profil utilisateur.
+ *
+ * CONCEPT CLÉ :
+ * - 'property_path' : Permet de mapper un champ du formulaire directement vers une propriété
+ *   d'un sous-objet (ex: 'adress.city' modifie la ville de l'adresse de l'utilisateur).
+ */
 class ProfileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -68,6 +75,8 @@ class ProfileType extends AbstractType
                     new Assert\Length(max: 50, maxMessage: 'Le numéro de téléphone ne peut pas dépasser {{ limit }} caractères'),
                 ],
             ])
+            // Ici, on ne charge pas AdressType, on mappe manuellement les champs
+            // vers l'objet Adress lié à l'User via property_path
             ->add('houseNumber', TextType::class, [
                 'label' => 'Numéro de rue',
                 'property_path' => 'adress.houseNumber',
